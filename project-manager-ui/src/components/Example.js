@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import AddTask from './AddTask';
 import ViewTask from './ViewTask';
 import AddProject from './AddProject.js';
+import AddUser from './AddUser.js';
 
 
 export default class Example extends React.Component {
@@ -66,13 +67,13 @@ export default class Example extends React.Component {
             <AddProject />
           </TabPane>
           <TabPane tabId="2">
-             <ViewTask />
+             <AddTask />
           </TabPane>
           <TabPane tabId="3">
-            <AddTask />
+            <AddUser />
           </TabPane>
           <TabPane tabId="4">
-            <AddTask />
+            <ViewTask />
           </TabPane>
         </TabContent>}
       </div>

@@ -12,15 +12,16 @@ export default class AddProject extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      addForm:{
-        taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0]
+      ischecked:false,
+      addProjectForm:{
+        projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectPrioritySlider:[0,0]
       }
 
     };
 
-    this.addTask=this.addTask.bind(this);
+    this.addProject=this.addProject.bind(this);
     this.onChange=this.onChange.bind(this);
-   // this.reset=this.reset.bind(this);
+    this.reset=this.reset.bind(this);
   }
   
   /*onSliderChange = (value) => {
@@ -32,46 +33,48 @@ export default class AddProject extends React.Component {
   
   onChange(fieldName,value){
     // /console.log(fieldName,value);
-    let addForm=this.state.addForm;
-    if(fieldName=="taskName"){
-      addForm.taskName=value
-    }else if(fieldName=="priority"){
-      addForm.priority=value[1];
-      addForm.slider=[value[0],value[1]];
-      console.log( addForm.slider);
-    }else if(fieldName=="parentTaskName"){
-      addForm.parentTaskName=value
-    }else if(fieldName=="startDate"){
-      addForm.startDate=value
-    }else if(fieldName=="endDate"){
-      addForm.endDate=value
+    let addProjectForm=this.state.addProjectForm;
+    if(fieldName=="projectName"){
+      addProjectForm.projectName=value
+    }else if(fieldName=="projectPriority"){
+      addProjectForm.projectPriority=value[1];
+      addProjectForm.projectPrioritySlider=[value[0],value[1]];
+      console.log(addProjectForm.projectPrioritySlider);
+    }else if(fieldName=="projectManagerName"){
+      addProjectForm.projectManagerName=value
+    }else if(fieldName=="projectStartDate"){
+      addProjectForm.projectStartDate=value
+    }else if(fieldName=="projectEndDate"){
+      addProjectForm.projectEndDate=value
+    }else if(fieldName=="check"){
+      this.setState({ischecked:value})
     }
 
-    this.setState({addForm})
+    this.setState({addProjectForm})
 
   }
-  addTask(){
+  addProject(){
   
     var moment = require("moment");
-    const addTask=this.state.addForm;
+    const addProject=this.state.addProjectForm;
   
-    console.log("***************",addTask);
+    console.log("***************",addProject);
    
   
   
 
-    if(addTask.taskName=="" || addTask.taskName==null || addTask.taskName==undefined){
+    if(addProject.projectName=="" || addProject.projectName==null || addProject.projectName==undefined){
       toast.error("Task cannot be blank");
       return;
     }
-    if(addTask.startDate=="" || addTask.startDate==null || addTask.startDate==undefined){
+    if(addProject.projectStartDate=="" || addProject.projectStartDate==null || addProject.projectStartDate==undefined){
       toast.error("Start Date cannot be blank");
       return;
     }
-    if((addTask.startDate != null || addTask.startDate!="" || addTask.startDate!=undefined) && (addTask.endDate != null || addTask.endDate!="" || addTask.endDate!=undefined)){
+    if((addProject.projectEndDate != null || addProject.projectEndDate!="" || addProject.projectEndDate!=undefined) && (addProject.endDate != null || addProject.endDate!="" || addProject.endDate!=undefined)){
 
-      var str=addTask.startDate;
-      var end=addTask.endDate;
+      var str=addProject.projectStartDate;
+      var end=addProject.projectEndDate;
       
      // console.log(str,end)
       //console.log(strDate,endDate);
@@ -88,21 +91,21 @@ export default class AddProject extends React.Component {
        toast.warn("End Date cannot be earlier/smaller than the Start Date");
      }
     }
-    if(addTask.taskName=="" || addTask.taskName==null || addTask.taskName==undefined){
+    if(addProject.projectName=="" || addProject.projectName==null || addProject.projectName==undefined){
       toast.error("Task cannot be blank");
       return;
     }
  
-    const task=addTask;
+    const project=addProject;
   /*********************** */
 
-  var url = 'http://localhost:8081/taskManager/addTask';
+  var url = 'http://localhost:8081/taskManager/addProject';
 //var task = {username: 'example'};
 
-console.log(JSON.stringify(task));
+console.log(JSON.stringify(project));
 fetch(url, {
   method: 'POST', // or 'PUT'
-  body: JSON.stringify(task), // data can be `string` or {object}!
+  body: JSON.stringify(project), // data can be `string` or {object}!
   
   //mode: 'no-cors',
   headers:{
@@ -116,76 +119,99 @@ toast.success("Task added successfully")})
   }
 
   reset(){
-  
-    let addForm=this.state.addForm;
+    let addProjectForm=this.state.addProjectForm;
    
-    addForm.taskName="";
-  addForm.parentTaskName="";
-  addForm.priority="";
-    addForm.startDate="";
-    addForm.endDate="";
-   addForm.slider=[0,0];
-   this.setState({addForm})
+    addProjectForm.projectName="";
+  addProjectForm.projectManagerName="";
+  addProjectForm.projectPriority="";
+    addProjectForm.projectStartDate="";
+    addProjectForm.projectEndDate="";
+   addProjectForm.projectPrioritySlider=[0,0];
+   this.setState({addProjectForm})
 
   }
   render() {
     
-      const formData=this.state.addForm;
+      const formData=this.state.addProjectForm;
       const priorityUpperBound=formData.priority;
      // const valuePriority:[0,formData.priority];
 const Range = Slider.Range;
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
       const containerStyle={
           'paddingTop':'20px',
-          'width':'90%'
+          'width':'75%',
+          'align':'left'
       }
+      var moment = require("moment");
+      var strDt=new Date();
+      //moment(new Date(),'dd-mm-yyyy');
     return (
 
     <Container style={containerStyle}>
-      <Form>
+      <Form >
         <FormGroup row>
-          <Label for="taskLabel" sm={3}>Task :</Label>
-          <Col sm={5}>
-            <Input type="text" name="taskName" id="task" placeholder="" value={formData.taskName} onChange={e => this.onChange("taskName",e.target.value)}/>
+          <Label for="projectNameLabel" sm={3}>Project :</Label>
+         <Col sm={6}> 
+            <Input type="text" name="projectName" id="projectName" placeholder="" value={formData.projectName} onChange={e => this.onChange("projectName",e.target.value)}/>
+          </Col> 
+        </FormGroup>
+        <FormGroup row>
+          <Col sm={3}>
+        {/* <Label check> */}
+            <br/>
+            <Input type="checkbox" name="check" id="check" checked={this.state.ischecked} onChange={e=>this.onChange("check",e.target.checked)}/>
+           <b>Set Start and End Date</b>
+         {/*  </Label> */}
+          </Col>
+           <Col sm={3}>
+        {/*    Start Date */}
+        <Label for="projectStartDateLabel">Start Date</Label>
+            <Input type="date" name="projectStartDate" id="projectStartDate" placeholder="Start Date" 
+             disabled={this.state.ischecked?false:true}  value={formData.projectStartDate}
+             //value={formData.projectStartDate==""?strDt:formData.startDate}
+              //value={strDt}
+             onChange={e => this.onChange("projectStartDate",e.target.value)}
+           
+             />
+           
+          </Col>
+        
+          <Col sm={3}>
+          <Label for="projectEndDateLabel">End Date</Label>
+            <Input type="date" name="projectEndDate" id="projectEndDate" placeholder="End Date" disabled={this.state.ischecked?false:true} value={formData.projectEndDate} onChange={e => this.onChange("projectEndDate",e.target.value)} />
           </Col>
         </FormGroup>
         <FormGroup row>
-            <Label for="priorityLabel" sm={3}>Priority :</Label>
+            <Label for="projectPriorityLabel" sm={3}>Priority :</Label>
            {/* <Col md={10}>
             <ReactBootstrapSlider
              id="priority"
              value={15} step={1} max={30} min={0} orientation="horizontal" reversed={true} disabled="disabled" />
             </Col>*/}
-            {<Col sm={5}>
-             <Range allowCross={false} min={0} max={30} name="priority" value={formData.slider} onChange={e => this.onChange("priority",e)} />
+            {<Col sm={6}>
+             <Range allowCross={false} min={0} max={30} name="projectPriority" value={formData.projectPrioritySlider} onChange={e => this.onChange("projectPriority",e)} />
             </Col>}
         </FormGroup>
         <FormGroup row>
-          <Label for="parentTaskLabel" sm={3}>Parent Task :</Label>
+          <Label for="projectManagerLabel" sm={3}>Manager :</Label>
           <Col sm={5}>
-            <Input type="text" name="parentTaskName" id="parentTask" placeholder="" value={formData.parentTaskName} onChange={e => this.onChange("parentTaskName",e.target.value)}/>
+            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
+          </Col>
+          <Col sm={2}>
+            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
           </Col>
         </FormGroup>
-        <FormGroup row>
-          <Label for="startDateLabel" sm={3}>Start Date:</Label>
-          <Col sm={5}>
-            <Input type="date" name="startDate" id="startDate" placeholder="" value={formData.startDate} onChange={e => this.onChange("startDate",e.target.value)}/>
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Label for="endDateLabel" sm={3}>End Date:</Label>
-          <Col sm={5}>
-            <Input type="date" name="endDate" id="endDate" placeholder="" value={formData.endDate} onChange={e => this.onChange("endDate",e.target.value)} />
-          </Col>
-        </FormGroup>
+        
         
         
         
         
       
       </Form>
-      <Button  color="secondary" onClick={()=>this.addTask()}>Add Task</Button>{' '}
+      <div>
+      <Button  color="secondary" onClick={()=>this.addProject()}>Add</Button>{' '}
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
+        </div>
        </Container>
     );
   }
