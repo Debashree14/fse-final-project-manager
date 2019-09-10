@@ -137,45 +137,75 @@ const Range = Slider.Range;
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
       const containerStyle={
           'paddingTop':'20px',
-          'width':'90%'
+          'width':'75%',
+          'align':'left'
       }
     return (
 
     <Container style={containerStyle}>
       <Form>
-        <FormGroup row>
-          <Label for="taskLabel" sm={3}>Task :</Label>
+      <FormGroup row>
+          <Label for="projectManagerLabel" sm={2}>Project :</Label>
           <Col sm={5}>
+            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
+          </Col>
+          <Col sm={2}>
+            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="taskLabel" sm={2}>Task :</Label>
+          <Col sm={6}>
             <Input type="text" name="taskName" id="task" placeholder="" value={formData.taskName} onChange={e => this.onChange("taskName",e.target.value)}/>
           </Col>
         </FormGroup>
         <FormGroup row>
-            <Label for="priorityLabel" sm={3}>Priority :</Label>
+          <Col sm ={2}>
+          </Col>
+          <Col sm={3}>
+        {/* <Label check> */}
+            <br/>
+            <Input type="checkbox" name="check" id="check" checked={this.state.ischecked} onChange={e=>this.onChange("check",e.target.checked)}/>
+           <b>Parent Task</b>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+            <Label for="priorityLabel" sm={2}>Priority :</Label>
            {/* <Col md={10}>
             <ReactBootstrapSlider
              id="priority"
              value={15} step={1} max={30} min={0} orientation="horizontal" reversed={true} disabled="disabled" />
             </Col>*/}
-            {<Col sm={5}>
+            {<Col sm={6}>
              <Range allowCross={false} min={0} max={30} name="priority" value={formData.slider} onChange={e => this.onChange("priority",e)} />
             </Col>}
         </FormGroup>
         <FormGroup row>
-          <Label for="parentTaskLabel" sm={3}>Parent Task :</Label>
+          <Label for="parentTaskLabel" sm={2}>Parent Task :</Label>
           <Col sm={5}>
             <Input type="text" name="parentTaskName" id="parentTask" placeholder="" value={formData.parentTaskName} onChange={e => this.onChange("parentTaskName",e.target.value)}/>
           </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Label for="startDateLabel" sm={3}>Start Date:</Label>
-          <Col sm={5}>
-            <Input type="date" name="startDate" id="startDate" placeholder="" value={formData.startDate} onChange={e => this.onChange("startDate",e.target.value)}/>
+          <Col sm={2}>
+            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label for="endDateLabel" sm={3}>End Date:</Label>
-          <Col sm={5}>
+          <Label for="startDateLabel" sm={2}>Start Date:</Label>
+          <Col sm={3}>
+            <Input type="date" name="startDate" id="startDate" placeholder="" value={formData.startDate} onChange={e => this.onChange("startDate",e.target.value)}/>
+          </Col>
+          <Label for="endDateLabel" sm={2}>End Date:</Label>
+          <Col sm={3}>
             <Input type="date" name="endDate" id="endDate" placeholder="" value={formData.endDate} onChange={e => this.onChange("endDate",e.target.value)} />
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="projectManagerLabel" sm={2}>Manager :</Label>
+          <Col sm={5}>
+            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
+          </Col>
+          <Col sm={2}>
+            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
           </Col>
         </FormGroup>
         

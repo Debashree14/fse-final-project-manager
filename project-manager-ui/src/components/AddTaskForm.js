@@ -14,7 +14,7 @@ const AddTaskForm = (props) => {
 
   //  console.log(props);
     var formData=props.formData;
-    console.log("formData in addtask fi=orm=",formData);
+   // console.log("formData in addtask fi=orm=",formData);
     const priorityUpperBound=formData.priority;
     // const valuePriority:[0,formData.priority];
 const Range = Slider.Range;

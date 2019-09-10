@@ -6,7 +6,9 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {moment} from 'moment';
 import { compose } from 'redux';
-
+import TaskGrid from './TaskGrid';
+import ProjectGrid from './ProjectGrid';
+import SearchBar from  './SearchBar';
 
 export default class AddProject extends React.Component {
   constructor(props) {
@@ -15,7 +17,21 @@ export default class AddProject extends React.Component {
       ischecked:false,
       addProjectForm:{
         projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectPrioritySlider:[0,0]
-      }
+      },
+      projectList:[{projectId:5,
+        projectName:'PR1',
+        totalTasks:5,
+        tatalCompletedTasks:3,
+        projectStartDate:"",
+        projectEndDate:"",
+        projectPriority:20},
+        {projectId:8,
+          projectName:'PR2',
+          totalTasks:5,
+          tatalCompletedTasks:3,
+          projectStartDate:"",
+          projectEndDate:"",
+          projectPriority:25}]
 
     };
 
@@ -146,7 +162,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
       var strDt=new Date();
       //moment(new Date(),'dd-mm-yyyy');
     return (
-
+<div>
     <Container style={containerStyle}>
       <Form >
         <FormGroup row>
@@ -198,7 +214,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
             <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
           </Col>
           <Col sm={2}>
-            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
+            <Button  color="primary" onClick={()=>this.addProject()}>Search</Button>
           </Col>
         </FormGroup>
         
@@ -213,6 +229,22 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
         </div>
        </Container>
+       <Container className="searchBarContainer">
+       <FormGroup row>
+         <SearchBar/>
+         <b>Sort By:</b>
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Start Date</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>End Date</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Priority</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}
+   
+         </FormGroup>
+         </Container>
+
+        <Container className="gridContainer">
+        < ProjectGrid data={this.state.projectList} updateGrid={this.updateGrid}/>
+        </Container>
+        </div>
     );
   }
 }

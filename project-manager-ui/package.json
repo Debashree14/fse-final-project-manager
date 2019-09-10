@@ -25,6 +25,8 @@
     "react-bootstrap": "1.0.0-beta.8"
   },
   "dependencies": {
+    "ag-grid-community": "21.1.1",
+    "ag-grid-react": "21.1.0",
     "bootstrap": "^3.4.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
@@ -32,6 +34,8 @@
     "jquery": "^3.4.1",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "mdbreact": "4.19.2",
+    "moment": "2.24.0",
     "path": "^0.12.7",
     "postcss-loader": "^2.0.8",
     "prop-types": "^15.7.2",
@@ -41,18 +45,15 @@
     "react-bootstrap-slider": "^2.2.2",
     "react-compound-slider": "^1.2.2",
     "react-dom": "^16.8.6",
+    "react-redux": "7.1.1",
+    "react-toastify": "5.3.1",
     "reactstrap": "^8.0.0",
+    "redux": "4.0.4",
+    "redux-logger": "2.10.2",
+    "redux-thunk": "2.3.0",
     "svg-inline-loader": "^0.8.0",
     "uglifyjs-webpack-plugin": "^1.0.1",
     "url-loader": "^0.6.2",
-    "webpack-combine-loaders": "^2.0.3",
-    "react-toastify": "5.3.1",
-    "moment": "2.24.0",
-    "redux": "3.6.0",
-    "redux-logger": "2.7.4",
-    "redux-thunk": "2.2.0",
-    "react-redux": "5.0.0",
-    "ag-grid-react": "21.1.0",
-    "ag-grid-community": "21.1.1"
+    "webpack-combine-loaders": "^2.0.3"
   }
 }

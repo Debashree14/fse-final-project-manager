@@ -8,7 +8,20 @@ export default class ViewTask extends React.Component {
   constructor(){
     super();
     this.state={
-      taskList:[]//,
+      taskList:[{
+        taskName:"Task1",
+        priority:5,
+        startDate:"",
+        endDate:"",
+        parentTaskName:"ParentTask1"
+      },
+      {
+        taskName:"Task2",
+        priority:15,
+        startDate:"",
+        endDate:"",
+        parentTaskName:"ParentTask1"
+      }]//,
      // modal:false
   }
   this.getTasks=this.getTasks.bind(this);
@@ -73,63 +86,23 @@ getTasks(){
       <div>
       <Container style={containerStyle}>
       <Form>
-        <Row form>
-          <Col md={6}>
-             <FormGroup >
-          <Label for="taskLabel" sm={2}>Task :</Label>
-          <Col sm={10}>
-            <Input type="text" name="email" id="task" placeholder="" />
-       </Col>
-        </FormGroup>
+      <FormGroup row>
+          <Label for="projectManagerLabel" style={{'paddingTop':'10px'}}>Project :</Label>
+          <Col sm={4}>
+            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={""} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
           </Col>
-          <Col md={6}>
-            <FormGroup >
-          <Label for="parentTaskLabel" sm={2}>Parent Task :</Label>
-           <Col sm={10}>
-            <Input type="text" name="parentTask" id="parentTask" placeholder="" />
-          </Col>
-        </FormGroup>
-          </Col>
-        </Row>
+         
+            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
        
-        <Row form style={containerStyle}>
-          <Col md={3}>
-             <FormGroup >
-          <Label for="startDateLabel" sm={4}>Priority From:</Label>
-          <Col sm={8}>
-            <Input type="text" name="startDate" id="startDate" placeholder="" />
-          </Col>
+          <b style={{'paddingTop':'10px'}}>Sort By:</b>
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Start Date</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>End Date</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Priority</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}
+   
         </FormGroup>
-          </Col>
-         <Col md={3}>
-             <FormGroup >
-          <Label for="startDateLabel" sm={4}>Priority To:</Label>
-          <Col sm={8}>
-            <Input type="text" name="startDate" id="startDate" placeholder="" />
-          </Col>
-        </FormGroup>
-          </Col>
-          <Col md={3}>
-             <FormGroup >
-          <Label for="startDateLabel" sm={4}>Start Date:</Label>
-          <Col sm={8}>
-            <Input type="text" name="startDate" id="startDate" placeholder="" />
-          </Col>
-        </FormGroup>
-          </Col>
-          <Col md={3}>
-             <FormGroup >
-          <Label for="startDateLabel" sm={4}>End Date:</Label>
-          <Col sm={8}>
-            <Input type="text" name="startDate" id="startDate" placeholder="" />
-          </Col>
-        </FormGroup>
-          </Col>
-        </Row>
-        
-       
+
       </Form>
-      <Button  color="secondary" onClick={()=>this.getTasks()}>Search</Button>
     
       </Container>
       <Container hidden={this.state.taskList.length >0 ? false:true} className="gridContainer">

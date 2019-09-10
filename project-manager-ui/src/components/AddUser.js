@@ -5,18 +5,31 @@ import Slider from 'rc-slider';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {moment} from 'moment';
-/* import { compose } from 'redux';
+ import { compose } from 'redux';
 import { connect,bindActionCreators } from "react-redux";
-import addUser from "../actions/userActions.js"; */
+import addUser from "../actions/userActions.js";
+import TaskGrid from './TaskGrid';
+import UserGrid from './UserGrid';
+import SearchBar from  './SearchBar';
 
-export default class AddUser extends React.Component {
+//class AddUser extends React.Component {
+  export default class AddUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       ischecked:false,
       addUserForm:{
         fisrtName:"",lastName:"",employeeId:"",
-      }
+      },
+      userList:[{employeeId:399512,
+      firstName:'Debashree',
+    lastName:'Dutta'},{employeeId:2148818,
+      firstName:'Subhamoy',
+    lastName:'Mandal'},{employeeId:399514,
+      firstName:'Manajit',
+    lastName:'Ghoshal'
+
+    }]
 
     };
 
@@ -115,6 +128,7 @@ toast.success("Task added successfully")})
       //moment(new Date(),'dd-mm-yyyy');
     return (
 
+      <div>
     <Container style={containerStyle}>
       <Form >
         <FormGroup row>
@@ -141,6 +155,23 @@ toast.success("Task added successfully")})
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
         </div>
        </Container>
+       <Container className="searchBarContainer">
+       <FormGroup row>
+         <SearchBar/>
+         <b>Sort By:</b>
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>First Name</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Last Name</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Employee Id</Button>{/* </Col> */}
+        
+   
+         </FormGroup>
+         </Container>
+
+        <Container className="gridContainer">
+        < UserGrid data={this.state.userList} updateGrid={this.updateGrid}/>
+        </Container>
+        </div>
+      
     );
   }
 }
@@ -151,5 +182,5 @@ toast.success("Task added successfully")})
 const  mapDispatchToProps = (dispatch) => {
   return bindActionCreators(this.addUser, dispatch);
 }
-export default connect(mapStateToProps, {addUser} )(AddUser); 
+//export default connect(mapStateToProps, {addUser} )(AddUser); 
 export default connect(mapStateToProps, mapDispatchToProps)(AddUser); */
