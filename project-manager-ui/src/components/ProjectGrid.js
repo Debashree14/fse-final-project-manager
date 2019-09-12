@@ -3,6 +3,7 @@ import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,Container,Mod
 import { AgGridReact } from 'ag-grid-react';
 import EditTaskModal from './EditTaskModal.js';
 import CustomModal from './Modal.js';
+import SearchBar from  './SearchBar';
 
 import ButtonCellRenderer from '../renderer/ButtonCellRenderer.js';
 
@@ -45,22 +46,22 @@ export default class ProjectGrid extends React.Component {
          '<span>'+params.value+'</span>'
        // 'Value is <b>'+params.value+'</b></div>';
      }
-        
+        this.defaultColDef={ sortable: true }
         this.columnDefs=[{
-          headerName: "Project Id", field: "projectId",width:100,hide:true
+          headerName: "Project Id", field: "projectId",width:100,hide:true,colId:'projectId'
         }, {
-          headerName: "Project", field: "projectName",cellRenderer:cellRendertask,width:250
+          headerName: "Project", field: "projectName",cellRenderer:cellRendertask,width:250,colId:'projectName'
         },{
-          headerName: "No. Of Tasks", field: "totalTasks",width:100,cellRenderer:otherRendertask
+          headerName: "No. Of Tasks", field: "totalTasks",width:100,cellRenderer:otherRendertask,
         },{
           headerName: "Completed", field: "tatalCompletedTasks",cellRenderer:cellRendertask,width:250
         }, {
-          headerName: "Start Date", field: "projectStartDate",width:120,cellRenderer:otherRendertask
+          headerName: "Start Date", field: "projectStartDate",width:120,cellRenderer:otherRendertask,colId:'projectStartDate'
         },{
-          headerName: "End Date", field: "projectEndDate",width:120,cellRenderer:otherRendertask
+          headerName: "End Date", field: "projectEndDate",width:120,cellRenderer:otherRendertask,colId:'projectEndDate'
         },
         {
-          headerName: "Priority", field: "projectPriority",width:120,cellRenderer:otherRendertask
+          headerName: "Priority", field: "projectPriority",width:120,cellRenderer:otherRendertask,colId:'projectPriority'
         },
         {
           headerName: "Update", field: "" ,width:130, cellRendererFramework:ButtonCellRenderer//,
@@ -81,6 +82,7 @@ export default class ProjectGrid extends React.Component {
         this.closeCancelModal=this.closeCancelModal.bind(this);
         this.onChange=this.onChange.bind(this);
         this.updateTask=this.updateTask.bind(this);
+        this.sortByStartDate=this.sortByStartDate.bind(this);
     }
      editTask(params){
        this.props.toggleModal();
@@ -157,6 +159,37 @@ export default class ProjectGrid extends React.Component {
         modalUpdateForm:data
       });
     }
+
+    sortByStartDate(){
+      var sort = [
+        {
+          colId: "projectStartDate",
+          sort: "asc"
+        }
+      ];
+      console.log(this.gridApi);
+      this.gridApi.setSortModel(sort);
+    }
+    sortByEndtDate(){
+      var sort = [
+        {
+          colId: "projectEndDate",
+          sort: "asc"
+        }
+      ];
+      console.log(this.gridApi);
+      this.gridApi.setSortModel(sort);
+    }
+    sortByProjectPriority(){
+      var sort = [
+        {
+          colId: "projectPriority",
+          sort: "asc"
+        }
+      ];
+      console.log(this.gridApi);
+      this.gridApi.setSortModel(sort);
+    }
     render(){
       var columnDefs=this.columnDefs;
         return(
@@ -164,10 +197,19 @@ export default class ProjectGrid extends React.Component {
             { /*this.state.modal && 
   <EditTaskModal isOpen={this.state.modal}/> */} 
  
-         
+ <FormGroup row>
+         <SearchBar/>
+         <b>Sort By:</b>
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByStartDate.bind(this)}>Start Date</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByEndtDate.bind(this)}>End Date</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByProjectPriority.bind(this)}>Priority</Button>{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}
+   
+         </FormGroup>
     <div  className="ag-theme-balham gridAg" >
         <AgGridReact
             columnDefs={this.columnDefs}
+            defaultColDef={this.defaultColDef}
             rowData={this.props.data}
             rowHeight={100}
             frameworkComponents={this.state.frameworkComponents}

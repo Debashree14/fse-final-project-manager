@@ -22,16 +22,22 @@ export default class AddProject extends React.Component {
         projectName:'PR1',
         totalTasks:5,
         tatalCompletedTasks:3,
-        projectStartDate:"",
-        projectEndDate:"",
+        projectStartDate:"23/06/2019",
+        projectEndDate:"23/08/2019",
         projectPriority:20},
         {projectId:8,
           projectName:'PR2',
           totalTasks:5,
           tatalCompletedTasks:3,
-          projectStartDate:"",
-          projectEndDate:"",
-          projectPriority:25}]
+          projectStartDate:"03/04/2019",
+          projectEndDate:"12/06/2019",
+          projectPriority:25},{projectId:5,
+            projectName:'PR3',
+            totalTasks:15,
+            tatalCompletedTasks:13,
+            projectStartDate:"03/06/2018",
+            projectEndDate:"23/10/2019",
+            projectPriority:2}]
 
     };
 

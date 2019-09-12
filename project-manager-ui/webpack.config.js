@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+process.env.NODE_ENV='development'
 module.exports = {
   entry: "./src/index.js",
   output: {

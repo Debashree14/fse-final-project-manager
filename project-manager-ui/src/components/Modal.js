@@ -16,7 +16,7 @@ const modal = (props) => {
         <div>
             <div className="modal-wrapper"
                 style={{
-                    transform: props.show ? 'translateY(-800px)' : 'translateY(-100vh)',
+                    transform: props.show ? 'translateY(-500px)' : 'translateY(-50vh)',
                     opacity: props.show ? '1' : '0',
                     paddingRight:'150px'
                 }}>

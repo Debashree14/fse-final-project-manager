@@ -1,11 +1,16 @@
 import React from 'react';
-import { Col, Button, Form, FormGroup, Label, Input, FormText ,Container } from 'reactstrap';
+import { Col, Button, Form, FormGroup, Label, Input, FormText ,Container,Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Slider from 'rc-slider';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {moment} from 'moment';
 import { compose } from 'redux';
+import EditTaskModal from './EditTaskModal';
+import CustomModal from './Modal.js';
+import GenericModal from './GenericModal.js';
+import ViewTask from './ViewTask.js';
+import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
 
 
 export default class AddTask extends React.Component {
@@ -13,13 +18,16 @@ export default class AddTask extends React.Component {
     super(props);
     this.state = {
       addForm:{
-        taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0]
-      }
+        taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0],projectManagerName:""
+      },
+      modal:false,
+      isOpen:true
 
     };
 
     this.addTask=this.addTask.bind(this);
     this.onChange=this.onChange.bind(this);
+    this.searchProject=this.searchProject.bind(this);
    // this.reset=this.reset.bind(this);
   }
   
@@ -45,10 +53,18 @@ export default class AddTask extends React.Component {
       addForm.startDate=value
     }else if(fieldName=="endDate"){
       addForm.endDate=value
+    }else if(fieldName=="projectManagerName"){
+      addForm.projectManagerName=value;
     }
 
     this.setState({addForm})
 
+  }
+  searchProject(){
+
+    this.setState({
+      modal:true
+    })
   }
   addTask(){
   
@@ -141,7 +157,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
           'align':'left'
       }
     return (
-
+<div>
     <Container style={containerStyle}>
       <Form>
       <FormGroup row>
@@ -150,7 +166,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
             <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
           </Col>
           <Col sm={2}>
-            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
+            <Button  color="secondary" onClick={()=>this.searchProject()}>Search</Button>
           </Col>
         </FormGroup>
         <FormGroup row>
@@ -217,6 +233,47 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
       <Button  color="secondary" onClick={()=>this.addTask()}>Add Task</Button>{' '}
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
        </Container>
+       {<GenericModal
+                    className="modal"
+                    show={this.state.modal}
+                    close={this.closeCancelModal}
+                    columnDefs={this.columnDefs}
+                    gridData={this.props.data}
+                    formData={this.state.addForm}
+                    closeCancleModal={this.closeCancelModal}
+                    onChange={this.onChange}
+                    updateTask={this.updateTask}
+                    updateGrid={this.updateGrid}
+                    >
+                        Maybe aircrafts fly very high because they don't want to be seen in plane sight?
+    </GenericModal> }
+    {/* <Modal className="open-modal" isOpen={this.state.isOpen}  backdrop={false} >
+            <ModalHeader className="modal-header">Modal title</ModalHeader> }
+            <ModalBody className="modal-body">
+           
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </ModalBody>
+             <ModalFooter className="modal-footer">
+              <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
+              <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+            </ModalFooter> 
+  </Modal> */}
+      {/*  <MDBContainer>
+       
+        <MDBModal isOpen={this.state.modal} centered>
+          <MDBModalHeader>MDBModal title</MDBModalHeader>
+          <MDBModalBody>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat.
+          </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color="secondary" onClick={alert("test2")}>Close</MDBBtn>
+            <MDBBtn color="primary">Save changes</MDBBtn>
+          </MDBModalFooter>
+        </MDBModal>
+      </MDBContainer> */}
+       </div>
     );
   }
 }
