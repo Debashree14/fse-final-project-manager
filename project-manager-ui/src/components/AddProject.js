@@ -223,29 +223,13 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
             <Button  color="primary" onClick={()=>this.addProject()}>Search</Button>
           </Col>
         </FormGroup>
-        
-        
-        
-        
-        
-      
       </Form>
       <div>
-      <Button  color="secondary" onClick={()=>this.addProject()}>Add</Button>{' '}
+        <Button  color="secondary" onClick={()=>this.addProject()}>Add</Button>{' '}
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
         </div>
        </Container>
-       <Container className="searchBarContainer">
-       <FormGroup row>
-         <SearchBar/>
-         <b>Sort By:</b>
-         {/* <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Start Date</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>End Date</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Priority</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}
-   
-         </FormGroup>
-         </Container>
+      
 
         <Container className="gridContainer">
         < ProjectGrid data={this.state.projectList} updateGrid={this.updateGrid}/>

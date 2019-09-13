@@ -14,6 +14,11 @@ export default class ProjectGrid extends React.Component {
         super(props);
         this.state = {
          modal:false,
+         prioritySort:"asc",
+         startDateSort:"asc",
+         endDateSort:"asc",
+         completedSort:"asc",
+
          context: { componentParent: this, editModal: CustomModal},
          modalUpdateForm:{
           taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0]
@@ -46,6 +51,30 @@ export default class ProjectGrid extends React.Component {
          '<span>'+params.value+'</span>'
        // 'Value is <b>'+params.value+'</b></div>';
      }
+     const dateComparator=function(date1, date2) {
+      var date1Number = monthToComparableNumber(date1);
+      var date2Number = monthToComparableNumber(date2);
+      if (date1Number === null && date2Number === null) {
+        return 0;
+      }
+      if (date1Number === null) {
+        return -1;
+      }
+      if (date2Number === null) {
+        return 1;
+      }
+      return date1Number - date2Number;
+    }
+    const monthToComparableNumber=function(date) {
+      if (date === undefined || date === null || date.length !== 10) {
+        return null;
+      }
+      var yearNumber = date.substring(6, 10);
+      var monthNumber = date.substring(3, 5);
+      var dayNumber = date.substring(0, 2);
+      var result = yearNumber * 10000 + monthNumber * 100 + dayNumber;
+      return result;
+    }
         this.defaultColDef={ sortable: true }
         this.columnDefs=[{
           headerName: "Project Id", field: "projectId",width:100,hide:true,colId:'projectId'
@@ -56,9 +85,9 @@ export default class ProjectGrid extends React.Component {
         },{
           headerName: "Completed", field: "tatalCompletedTasks",cellRenderer:cellRendertask,width:250
         }, {
-          headerName: "Start Date", field: "projectStartDate",width:120,cellRenderer:otherRendertask,colId:'projectStartDate'
+          headerName: "Start Date", field: "projectStartDate",width:120,cellRenderer:otherRendertask,colId:'projectStartDate',comparator:dateComparator
         },{
-          headerName: "End Date", field: "projectEndDate",width:120,cellRenderer:otherRendertask,colId:'projectEndDate'
+          headerName: "End Date", field: "projectEndDate",width:120,cellRenderer:otherRendertask,colId:'projectEndDate',comparator:dateComparator
         },
         {
           headerName: "Priority", field: "projectPriority",width:120,cellRenderer:otherRendertask,colId:'projectPriority'
@@ -83,6 +112,7 @@ export default class ProjectGrid extends React.Component {
         this.onChange=this.onChange.bind(this);
         this.updateTask=this.updateTask.bind(this);
         this.sortByStartDate=this.sortByStartDate.bind(this);
+        this.onChangeOfSearchText=this.onChangeOfSearchText.bind(this);
     }
      editTask(params){
        this.props.toggleModal();
@@ -120,6 +150,11 @@ export default class ProjectGrid extends React.Component {
       this.gridColumnApi = params.columnApi;
       params.api.sizeColumnsToFit();
     };
+    onChangeOfSearchText(value){
+
+      this.gridApi.setQuickFilter(value);
+
+    }
     onChange(fieldName,value){
       // /console.log(fieldName,value);
       let modalUpdateForm=this.state.modalUpdateForm;
@@ -161,15 +196,27 @@ export default class ProjectGrid extends React.Component {
     }
 
     sortByStartDate(){
+      var sortType;
+      //alert(this.state.startDateSort);
       var sort = [
         {
           colId: "projectStartDate",
-          sort: "asc"
+          sort: this.state.startDateSort
         }
       ];
-      console.log(this.gridApi);
+          
       this.gridApi.setSortModel(sort);
+      if(this.state.startDateSort === "asc")
+         sortType="desc";
+      else
+         sortType="asc";
+
+
+      this.setState({
+        startDateSort:sortType
+      })
     }
+  
     sortByEndtDate(){
       var sort = [
         {
@@ -190,6 +237,30 @@ export default class ProjectGrid extends React.Component {
       console.log(this.gridApi);
       this.gridApi.setSortModel(sort);
     }
+     dateComparator(date1, date2) {
+      var date1Number = monthToComparableNumber(date1);
+      var date2Number = monthToComparableNumber(date2);
+      if (date1Number === null && date2Number === null) {
+        return 0;
+      }
+      if (date1Number === null) {
+        return -1;
+      }
+      if (date2Number === null) {
+        return 1;
+      }
+      return date1Number - date2Number;
+    }
+     monthToComparableNumber(date) {
+      if (date === undefined || date === null || date.length !== 10) {
+        return null;
+      }
+      var yearNumber = date.substring(6, 10);
+      var monthNumber = date.substring(3, 5);
+      var dayNumber = date.substring(0, 2);
+      var result = yearNumber * 10000 + monthNumber * 100 + dayNumber;
+      return result;
+    }
     render(){
       var columnDefs=this.columnDefs;
         return(
@@ -198,9 +269,9 @@ export default class ProjectGrid extends React.Component {
   <EditTaskModal isOpen={this.state.modal}/> */} 
  
  <FormGroup row>
-         <SearchBar/>
+         <SearchBar onChangeOfSearchText={this.onChangeOfSearchText}/>
          <b>Sort By:</b>
-         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByStartDate.bind(this)}>Start Date</Button>{/* </Col> */}
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByStartDate.bind(this)}>Start Date {this.state.startDateSort}</Button>{/* </Col> */}
         {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByEndtDate.bind(this)}>End Date</Button>{/* </Col> */}
         {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByProjectPriority.bind(this)}>Priority</Button>{/* </Col> */}
         {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}

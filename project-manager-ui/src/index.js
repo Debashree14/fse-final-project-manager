@@ -2,9 +2,9 @@ import React from "react";
 import {ReactDOM,render} from "react-dom";
 import App from "./components/App.js";
 /**MDB */
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "bootstrap-css-only/css/bootstrap.min.css";
-import "mdbreact/dist/css/mdb.css";
+//import "@fortawesome/fontawesome-free/css/all.min.css";
+//import "bootstrap-css-only/css/bootstrap.min.css";
+//import "mdbreact/dist/css/mdb.css";
 /**MDB */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/css/bootstrap.css";
@@ -41,7 +41,7 @@ const reduxStore=configureStore();
     <App />, document.getElementById("root"));  */
 
 
-  if (process.env.NODE_ENV !== 'production' && module.hot) {
+  if (module.hot) {
     module.hot.accept('./components/App', renderApp)
   }
   

@@ -56,17 +56,19 @@ h1 {
     padding-right: 20px;
     padding-left:20px;
 }
+
 .modalClass{
 
     height: 200px;
     width: 20%;
-    z-index: inherit auto;;
+    z-index: inherit auto;
     background-color:red;
     position: relative;
-    transform: translate(-300px,-300px);
+    transform: translate(-3000px,-3000px);
     transition: all .8s;
     box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2), 0 7px 20px 0 rgba(0,0,0,0.17);
 }
+
 .modal-wrapper {
     background: white;
     border: 1px solid #d0cccc;
@@ -86,6 +88,7 @@ h1 {
     width: 455px;
 }
 
+
 .modal-header h3 {
     color: white;
     float: left;
@@ -98,16 +101,40 @@ h1 {
     margin:0;
     padding:150px;
 }
+
 .modal-body {
     padding: 10px 15px;
     text-align: left;
 }
 
+
+
+
+.modal-open {
+
+    background: green;
+    height:50px;
+
+}
+
+.open-modal{
+
+    background: pink;
+    height:10%;
+    width: 10%;
+    opacity: 1;
+    z-index: 1;
+    
+
+
+}
 .modal-footer {
     background: #263238;
     height: 35px;
     padding: 15px;
 }
+
+
 
 .close-modal-btn {
     color: white;

@@ -1,6 +1,6 @@
 import { createStore } from "redux";
-import userReducer from "../reducers/userReducer.js";
+import rootReducer from "../reducers/rootReducer.js";
 
 export default function configureStore(initialState){
-   return createStore(userReducer);
+   return createStore(rootReducer);
 }; 

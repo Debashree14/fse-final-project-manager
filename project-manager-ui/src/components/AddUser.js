@@ -12,8 +12,8 @@ import TaskGrid from './TaskGrid';
 import UserGrid from './UserGrid';
 import SearchBar from  './SearchBar';
 
-//class AddUser extends React.Component {
-  export default class AddUser extends React.Component {
+class AddUser extends React.Component {
+  //export default class AddUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -126,8 +126,10 @@ toast.success("Task added successfully")})
           'align':'left'
       }
       //moment(new Date(),'dd-mm-yyyy');
+      console.log("adduser",this.props);
     return (
 
+     
       <div>
     <Container style={containerStyle}>
       <Form >
@@ -168,19 +170,21 @@ toast.success("Task added successfully")})
          </Container>
 
         <Container className="gridContainer">
-        < UserGrid data={this.state.userList} updateGrid={this.updateGrid}/>
+        < UserGrid data={this.props.users} updateGrid={this.updateGrid}/>
         </Container>
         </div>
       
     );
   }
 }
-/* const mapStateToProps = state => {
+ const mapStateToProps = state => {
   const users = state.userDataReducer;
   return users;
 }
-const  mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(this.addUser, dispatch);
-}
+/*  const  mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({addUser}, dispatch);
+}  */
 //export default connect(mapStateToProps, {addUser} )(AddUser); 
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser); */
+
+//export default connect(mapStateToProps, {addUser} )(User);
+export default connect(mapStateToProps, {addUser})(AddUser); 
