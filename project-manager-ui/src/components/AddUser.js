@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {moment} from 'moment';
  import { compose } from 'redux';
 import { connect,bindActionCreators } from "react-redux";
-import addUser from "../actions/userActions.js";
+import {addUser,getAllUsers} from "../actions/userActions.js";
 import TaskGrid from './TaskGrid';
 import UserGrid from './UserGrid';
 import SearchBar from  './SearchBar';
@@ -178,7 +178,8 @@ toast.success("Task added successfully")})
   }
 }
  const mapStateToProps = state => {
-  const users = state.userDataReducer;
+  const users = state.userReducer;
+  console.log("state,userreducer",state.userReducer);
   return users;
 }
 /*  const  mapDispatchToProps = (dispatch) => {
@@ -187,4 +188,4 @@ toast.success("Task added successfully")})
 //export default connect(mapStateToProps, {addUser} )(AddUser); 
 
 //export default connect(mapStateToProps, {addUser} )(User);
-export default connect(mapStateToProps, {addUser})(AddUser); 
+export default connect(mapStateToProps, {getAllUsers})(AddUser); 

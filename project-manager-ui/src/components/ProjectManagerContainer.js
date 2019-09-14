@@ -8,7 +8,7 @@ import AddProject from './AddProject.js';
 import AddUser from './AddUser.js';
 
 
-export default class Example extends React.Component {
+export default class ProjectManagerContainer extends React.Component {
   constructor(props) {
     super(props);
 

@@ -11,7 +11,7 @@ export function addUser(user) {
 export function getAllUsers(){
 
    return{
-      type:GET_USER,
+      type: GET_USER,
       payload:response
    }
 

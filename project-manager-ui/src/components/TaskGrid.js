@@ -3,7 +3,7 @@ import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,Container,Mod
 import { AgGridReact } from 'ag-grid-react';
 import EditTaskModal from './EditTaskModal.js';
 import CustomModal from './Modal.js';
-
+import SearchBar from  './SearchBar';
 import ButtonCellRenderer from '../renderer/ButtonCellRenderer.js';
 
 export default class TaskGrid extends React.Component {
@@ -80,6 +80,12 @@ export default class TaskGrid extends React.Component {
         this.closeCancelModal=this.closeCancelModal.bind(this);
         this.onChange=this.onChange.bind(this);
         this.updateTask=this.updateTask.bind(this);
+        this.onChangeOfSearchText=this.onChangeOfSearchText.bind(this);
+    }
+    onChangeOfSearchText(value){
+
+      this.gridApi.setQuickFilter(value);
+
     }
      editTask(params){
        this.props.toggleModal();
@@ -155,6 +161,72 @@ export default class TaskGrid extends React.Component {
       this.setState({
         modalUpdateForm:data
       });
+    }
+    sortByStartDate(){
+      var sortType;
+      //alert(this.state.startDateSort);
+      var sort = [
+        {
+          colId: "projectStartDate",
+          sort: this.state.startDateSort
+        }
+      ];
+          
+      this.gridApi.setSortModel(sort);
+      if(this.state.startDateSort === "asc")
+         sortType="desc";
+      else
+         sortType="asc";
+
+
+      this.setState({
+        startDateSort:sortType
+      })
+    }
+  
+    sortByEndtDate(){
+      var sort = [
+        {
+          colId: "projectEndDate",
+          sort: "asc"
+        }
+      ];
+      console.log(this.gridApi);
+      this.gridApi.setSortModel(sort);
+    }
+    sortByProjectPriority(){
+      var sort = [
+        {
+          colId: "projectPriority",
+          sort: "asc"
+        }
+      ];
+      console.log(this.gridApi);
+      this.gridApi.setSortModel(sort);
+    }
+     dateComparator(date1, date2) {
+      var date1Number = monthToComparableNumber(date1);
+      var date2Number = monthToComparableNumber(date2);
+      if (date1Number === null && date2Number === null) {
+        return 0;
+      }
+      if (date1Number === null) {
+        return -1;
+      }
+      if (date2Number === null) {
+        return 1;
+      }
+      return date1Number - date2Number;
+    }
+     monthToComparableNumber(date) {
+      if (date === undefined || date === null || date.length !== 10) {
+        return null;
+      }
+      var yearNumber = date.substring(6, 10);
+      var monthNumber = date.substring(3, 5);
+      var dayNumber = date.substring(0, 2);
+      var result = yearNumber * 10000 + monthNumber * 100 + dayNumber;
+      return result;
     }
     render(){
       var columnDefs=this.columnDefs;

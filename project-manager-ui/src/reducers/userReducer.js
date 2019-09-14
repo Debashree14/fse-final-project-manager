@@ -20,7 +20,7 @@ lastName:'Mitra'
                 users: [...state.users, action.user]
                }); 
         case GET_USER:
-          return Object.assign({},state, { users: [...state.users, action.user]});
+          return Object.assign({},state, { users: [...state.users]});
          default: 
            return state;
      }

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import '../styles/App.css';
 import ControlledTabs from './ControlledTabs.js';
-import Example from './Example.js';
+import ProjectManagerContainer from './ProjectManagerContainer.js';
 import Example1 from './Example1.js';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,7 +19,7 @@ class App extends React.Component {
                 <h1>Project Manager</h1>
                { /*alert("test")*/}
 			{/*	<ControlledTabs />*/}
-              <Example />
+              <ProjectManagerContainer />
          
               {/*  <Example1 />    <ToastContainer />*/  }
             </div>

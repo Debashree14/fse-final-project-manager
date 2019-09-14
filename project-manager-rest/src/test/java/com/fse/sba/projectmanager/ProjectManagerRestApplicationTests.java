@@ -1,4 +1,4 @@
-package com.fse.sba.projectmanagerrest;
+package com.fse.sba.projectmanager;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
