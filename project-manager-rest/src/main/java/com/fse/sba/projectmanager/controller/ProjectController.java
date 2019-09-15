@@ -1,7 +1,11 @@
 package com.fse.sba.projectmanager.controller;
 
+import com.fse.sba.projectmanager.dto.ParentTaskDTO;
+import com.fse.sba.projectmanager.dto.ProjectDTO;
+import com.fse.sba.projectmanager.entity.ParentTask;
 import com.fse.sba.projectmanager.entity.Task;
 import com.fse.sba.projectmanager.entity.Project;
+import com.fse.sba.projectmanager.entity.User;
 import com.fse.sba.projectmanager.service.ParentService;
 import com.fse.sba.projectmanager.service.ProjectService;
 import com.fse.sba.projectmanager.service.TaskService;
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/projectmanager/api")
@@ -22,6 +27,8 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private UserService userService;
 
 
   /*  @RequestMapping("/test")
@@ -34,9 +41,10 @@ public class ProjectController {
 
         List<Project> projects =new ArrayList<Project>();
         projects=projectService.getAllProjects();
+        List<ProjectDTO> projectResponseList =projects.stream().map(projectEntity-> projectService.generateProjectResponse(projectEntity)).collect(Collectors.toList());
         Map<Object,Object> response=new HashMap<Object,Object>();
-        response.put("projects",projects);
-        response.put("List Size",projects.size());
+        response.put("projectResponseList",projectResponseList);
+        response.put("List Size",projectResponseList.size());
         response.put("Message","Success");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -52,9 +60,13 @@ public class ProjectController {
             return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
         }
         else {
+            User user=userService.getUserById(project.getUser().getUserId());
+            project.setUser(user);
             Project createdProject = projectService.addUpdateProject(project);
 
-            response.put("project", createdProject);
+            ProjectDTO projectResponse=projectService.generateProjectResponse(createdProject);
+
+            response.put("projectResponse", projectResponse);
             response.put("Message", "Successfully" + HttpStatus.CREATED);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
@@ -71,8 +83,12 @@ public class ProjectController {
             return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
         }else {
 
+            User user=userService.getUserById(project.getUser().getUserId());
+            project.setUser(user);
             Project updatedProject = projectService.addUpdateProject(project);
-            response.put("project", updatedProject);
+
+            ProjectDTO projectResponse=projectService.generateProjectResponse(updatedProject);
+            response.put("project", projectResponse);
             response.put("Message", "Successfully Updated");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -87,7 +103,8 @@ public class ProjectController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }else {
             Project fetchedUser = projectService.getProjectById(projectId);
-            response.put("project", fetchedUser);
+            ProjectDTO projectResponse=projectService.generateProjectResponse(fetchedUser);
+            response.put("projectResponse", projectResponse);
             response.put("Message", "Successfully Fetched");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -106,6 +123,9 @@ public class ProjectController {
         }else {
 
             Project deletedUser = projectService.deleteProject(project);
+            ProjectDTO projectResponse=projectService.generateProjectResponse(deletedUser);
+
+            response.put("projectResponse", projectResponse);
             response.put("Message", "Successfully Deleted");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }

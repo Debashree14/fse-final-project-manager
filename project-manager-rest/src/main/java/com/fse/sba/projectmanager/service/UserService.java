@@ -1,5 +1,9 @@
 package com.fse.sba.projectmanager.service;
 
+import com.fse.sba.projectmanager.config.ProjectManagerConstants;
+import com.fse.sba.projectmanager.dto.ParentTaskDTO;
+import com.fse.sba.projectmanager.dto.UserDTO;
+import com.fse.sba.projectmanager.entity.ParentTask;
 import com.fse.sba.projectmanager.entity.Project;
 import com.fse.sba.projectmanager.entity.User;
 import com.fse.sba.projectmanager.repository.ProjectRepository;
@@ -43,5 +47,18 @@ public class UserService {
 
         userRepository.delete(user);
         return user;
+    }
+
+    public UserDTO generateUserResponse(User user){
+
+        UserDTO userDTO=new UserDTO();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setEmployeeId(user.getEmployeeId());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setUserName(user.getFirstName().concat(ProjectManagerConstants.SPACE_STR).concat(user.getLastName()));
+        userDTO.setActiveIn(user.getActiveIn());
+        return userDTO;
+
     }
 }

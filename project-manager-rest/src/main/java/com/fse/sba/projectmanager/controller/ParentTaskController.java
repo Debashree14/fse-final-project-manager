@@ -1,5 +1,6 @@
 package com.fse.sba.projectmanager.controller;
 
+import com.fse.sba.projectmanager.dto.ParentTaskDTO;
 import com.fse.sba.projectmanager.entity.ParentTask;
 import com.fse.sba.projectmanager.entity.Task;
 import com.fse.sba.projectmanager.service.ParentService;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/projectmanager/api")
@@ -35,8 +37,8 @@ public class ParentTaskController {
         }
         else {
             ParentTask createdParentTask = parentService.addParentTask(parentTask);
-
-            response.put("parentTask", createdParentTask);
+            ParentTaskDTO parentTaskResponse=parentService.generateParentTaskResponse(createdParentTask);
+            response.put("parentTaskResponse", parentTaskResponse);
             response.put("Message", "Successfully" + HttpStatus.CREATED);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
@@ -47,9 +49,10 @@ public class ParentTaskController {
 
         List<ParentTask> parentTasks =new ArrayList<ParentTask>();
         parentTasks=parentService.getAllParentTasks();
+        List<ParentTaskDTO> parentTaskResponseList=parentTasks.stream().map(parentTaskEntity->parentService.generateParentTaskResponse(parentTaskEntity)).collect(Collectors.toList());
         Map<Object,Object> response=new HashMap<Object,Object>();
-        response.put("parentTasks",parentTasks);
-        response.put("List Size",parentTasks.size());
+        response.put("parentTaskResponseList",parentTaskResponseList);
+        response.put("List Size",parentTaskResponseList.size());
         response.put("Message","Success");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

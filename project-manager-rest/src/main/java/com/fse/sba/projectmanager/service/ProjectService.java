@@ -1,11 +1,16 @@
 package com.fse.sba.projectmanager.service;
 
+import com.fse.sba.projectmanager.config.ProjectManagerConstants;
+import com.fse.sba.projectmanager.dto.ParentTaskDTO;
+import com.fse.sba.projectmanager.dto.ProjectDTO;
+import com.fse.sba.projectmanager.entity.ParentTask;
 import com.fse.sba.projectmanager.entity.Project;
 import com.fse.sba.projectmanager.entity.Task;
 import com.fse.sba.projectmanager.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +44,25 @@ public class ProjectService {
 
         projectRepository.delete(task);
         return task;
+    }
+
+    public ProjectDTO generateProjectResponse(Project project){
+
+        ProjectDTO projectDTO=new ProjectDTO();
+        projectDTO.setProjectId(project.getProjectId());
+        projectDTO.setProjectName(project.getProjectName());
+        projectDTO.setProjectStartDate(project.getProjectStartDate());
+        projectDTO.setProjectEndDate(project.getProjectEndDate());
+        projectDTO.setProjectPriority(project.getProjectPriority());
+        projectDTO.setManagerId(project.getUser().getUserId());
+        projectDTO.setManagerEmployeedId(project.getUser().getEmployeeId());
+        projectDTO.setManagerFirstName(project.getUser().getFirstName());
+        projectDTO.setManagerLastName(project.getUser().getLastName());
+        projectDTO.setManagerName(project.getUser().getFirstName().concat(ProjectManagerConstants.SPACE_STR).concat(project.getUser().getLastName()));
+        projectDTO.setTotalTasks(project.getTasks() != null ? project.getTasks().size():0);
+        projectDTO.setTatalCompletedTasks(project.getTasks() !=null ?((int)project.getTasks().stream().filter(projectEntity-> projectEntity.getStatus().equals(ProjectManagerConstants.COMPLETED_STS)).count()):0);
+        return projectDTO;
+
     }
 
 }

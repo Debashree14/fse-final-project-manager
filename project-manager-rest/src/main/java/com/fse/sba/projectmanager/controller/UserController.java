@@ -1,5 +1,8 @@
 package com.fse.sba.projectmanager.controller;
 
+import com.fse.sba.projectmanager.dto.ProjectDTO;
+import com.fse.sba.projectmanager.dto.TaskDTO;
+import com.fse.sba.projectmanager.dto.UserDTO;
 import com.fse.sba.projectmanager.entity.User;
 import com.fse.sba.projectmanager.service.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.fse.sba.projectmanager.service.UserService;
 import com.fse.sba.projectmanager.entity.User;
 import com.fse.sba.projectmanager.entity.ParentTask;
@@ -32,9 +37,12 @@ public class UserController {
     public ResponseEntity<Object> getAllUsers(){
 
         List<User> users =new ArrayList<User>();
+
         users=userService.getAllUsers();
+        List<UserDTO> userResponseList =users.stream().map(userEntity-> userService.generateUserResponse(userEntity)).collect(Collectors.toList());
+
         Map<Object,Object> response=new HashMap<Object,Object>();
-        response.put("users",users);
+        response.put("userResponseList",userResponseList);
         response.put("List Size",users.size());
         response.put("Message","Success");
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -53,7 +61,9 @@ public class UserController {
         else {
             User createdUser = userService.addUpdateUser(user);
 
-            response.put("user", createdUser);
+            UserDTO userResponse=userService.generateUserResponse(createdUser);
+
+            response.put("userResponse", userResponse);
             response.put("Message", "Successfully" + HttpStatus.CREATED);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
@@ -71,7 +81,9 @@ public class UserController {
         }else {
 
             User updatedUser = userService.addUpdateUser(user);
-            response.put("user", updatedUser);
+
+            UserDTO userResponse=userService.generateUserResponse(updatedUser);
+            response.put("userResponse", userResponse);
             response.put("Message", "Successfully Updated");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -86,7 +98,9 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }else {
             User fetchedUser = userService.getUserById(userId);
-            response.put("user", fetchedUser);
+            UserDTO userResponse=userService.generateUserResponse(fetchedUser);
+
+            response.put("userResponse", userResponse);
             response.put("Message", "Successfully Fetched");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -105,6 +119,9 @@ public class UserController {
         }else {
 
             User deletedUser = userService.deleteUser(user);
+            UserDTO userResponse=userService.generateUserResponse(deletedUser);
+
+            response.put("userResponse",userResponse);
             response.put("Message", "Successfully Deleted");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
