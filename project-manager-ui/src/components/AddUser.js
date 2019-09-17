@@ -8,9 +8,9 @@ import {moment} from 'moment';
  import { compose } from 'redux';
 import { connect,bindActionCreators } from "react-redux";
 import {addUser,getAllUsers} from "../actions/userActions.js";
-import TaskGrid from './TaskGrid';
 import UserGrid from './UserGrid';
-import SearchBar from  './SearchBar';
+import Settings from '../Settings.js';
+
 
 class AddUser extends React.Component {
   //export default class AddUser extends React.Component {
@@ -19,22 +19,17 @@ class AddUser extends React.Component {
     this.state = {
       ischecked:false,
       addUserForm:{
-        fisrtName:"",lastName:"",employeeId:"",
+        firstName:"",lastName:"",employeeId:""
       },
-      userList:[{employeeId:399512,
-      firstName:'Debashree',
-    lastName:'Dutta'},{employeeId:2148818,
-      firstName:'Subhamoy',
-    lastName:'Mandal'},{employeeId:399514,
-      firstName:'Manajit',
-    lastName:'Ghoshal'
-
-    }]
+      action:"add"
+    
 
     };
 
     this.addUser=this.addUser.bind(this);
     this.onChange=this.onChange.bind(this);
+    this.fetchUserList=this.fetchUserList.bind(this);
+    this.editUser=this.editUser.bind(this);
    // this.reset=this.reset.bind(this);
   }
   
@@ -44,11 +39,53 @@ class AddUser extends React.Component {
       value,
     });
   }*/
+  editUser(formData){
+
+    this.setState({addUserForm:formData});
+
+  }
+  fetchUserList(){
+
+    var userResponse;
+    var url = Settings.baseUrl+Settings.GET_ALL_USER;
+    console.log(url);
+    fetch(url/*,{
+      method: 'GET',
+      headers:{
+        'content-type': 'application/json',
+        'Access-Control-Allow-Origin':'*'
+      }
+    }*/)
+    .then(res => {//console.log(res.json())
+     // console.log("userList",res.json());
+       // console.log(res.status);
+      //  console.log(res.value);
+        return res.json();
+        console.log("userList",res.json());
+    })
+    .then(data => {console.log('Success:', data)
   
+      userResponse=data;
+
+      /* this.setState({
+        userList:data.userResponseList
+      }); */
+      this.props.updateUserGrid(data.userResponseList);
+    }).catch(error => console.error('Error:', error));
+    
+
+  }
+  componentDidMount(){
+      this.fetchUserList();
+
+     
+ // }
+  }
   onChange(fieldName,value){
     // /console.log(fieldName,value);
     let addUserForm=this.state.addUserForm;
-    if(firstName=="firstName"){
+    console.log(fieldName,value);
+    if(fieldName=="firstName"){
       addUserForm.firstName=value
     }else if(fieldName=="lastName"){
       addUserForm.lastName=value
@@ -70,38 +107,51 @@ class AddUser extends React.Component {
   
 
     if(addUserForm.firstName=="" || addUserForm.firstName==null || addUserForm.firstName==undefined){
-      toast.error("Task cannot be blank");
+      toast.error("First Name cannot be blank");
       return;
     }
     if(addUserForm.lastName=="" || addUserForm.lastName==null || addUserForm.lastName==undefined){
-      toast.error("Start Date cannot be blank");
+      toast.error("Last Name cannot be blank");
       return;
     }
     if(addUserForm.employeeId=="" || addUserForm.employeeId==null || addUserForm.employeeId==undefined){
-      toast.error("Start Date cannot be blank");
+      toast.error("Employee ID cannot be blank");
       return;
     }
  
     const addUser=addUserForm;
   /*********************** */
 
-  var url = 'http://localhost:8081/taskManager/addTask';
+  var url = Settings.baseUrl+Settings.ADD_USER;
 //var task = {username: 'example'};
-
-console.log(JSON.stringify(task));
+var newUserList=this.props.userList;
+console.log(JSON.stringify(addUser));
 fetch(url, {
   method: 'POST', // or 'PUT'
-  body: JSON.stringify(task), // data can be `string` or {object}!
+  body: JSON.stringify(addUser), // data can be `string` or {object}!
   
   //mode: 'no-cors',
   headers:{
     'content-type': 'application/json',
     'Access-Control-Allow-Origin':'*'
   }
-}).then(res => {  return res.json();})
+}).then(res => { 
+  
+  return res.json();
+
+})
 .then(response => {console.log('Success:', response)
-toast.success("Task added successfully")})
+    //if(response != null){
+   
+      console.log("newUserList",newUserList);
+      newUserList.unshift(response.userResponse);
+      console.log("newUserList after push",newUserList);
+      this.props.updateUserGrid(newUserList);
+   // }
+toast.success("User added successfully")})
 .catch(error => console.error('Error:', error));
+
+
   }
 
   reset(){
@@ -116,7 +166,7 @@ toast.success("Task added successfully")})
   }
   render() {
     
-      const formData=this.state.addUserForm;
+      let formData=this.state.addUserForm;
   
 
      const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -126,7 +176,7 @@ toast.success("Task added successfully")})
           'align':'left'
       }
       //moment(new Date(),'dd-mm-yyyy');
-      console.log("adduser",this.props);
+      //console.log("adduser",this.props);
     return (
 
      
@@ -157,20 +207,9 @@ toast.success("Task added successfully")})
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
         </div>
        </Container>
-       <Container className="searchBarContainer">
-       <FormGroup row>
-         <SearchBar/>
-         <b>Sort By:</b>
-         {/* <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>First Name</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Last Name</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Employee Id</Button>{/* </Col> */}
-        
-   
-         </FormGroup>
-         </Container>
-
         <Container className="gridContainer">
-        < UserGrid data={this.props.users} updateGrid={this.updateGrid}/>
+          {/*console.log("aggrid",this.props.userList)*/}
+        < UserGrid data={this.props.userList} updateGrid={this.updateGrid} editUser={this.editUser}/>
         </Container>
         </div>
       
@@ -179,7 +218,7 @@ toast.success("Task added successfully")})
 }
  const mapStateToProps = state => {
   const users = state.userReducer;
-  console.log("state,userreducer",state.userReducer);
+  //console.log("state,userreducer",state.userReducer);
   return users;
 }
 /*  const  mapDispatchToProps = (dispatch) => {

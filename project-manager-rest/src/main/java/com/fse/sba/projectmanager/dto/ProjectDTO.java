@@ -13,6 +13,7 @@ public class ProjectDTO {
 
 
     private int projectId;
+    private int key;
     private String projectName;
     private Date projectStartDate;
     private Date projectEndDate;
@@ -121,7 +122,16 @@ public class ProjectDTO {
         this.tatalCompletedTasks = tatalCompletedTasks;
     }
 
-    @Override
+    
+    public int getKey() {
+		return key;
+	}
+
+	public void setKey(int key) {
+		this.key = key;
+	}
+
+	@Override
     public String toString() {
         return "ProjectDTO{" +
                 "projectId=" + projectId +

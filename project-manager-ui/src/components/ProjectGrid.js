@@ -271,9 +271,9 @@ export default class ProjectGrid extends React.Component {
  <FormGroup row>
          <SearchBar onChangeOfSearchText={this.onChangeOfSearchText}/>
          <b>Sort By:</b>
-         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByStartDate.bind(this)}>Start Date {this.state.startDateSort}</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByEndtDate.bind(this)}>End Date</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByProjectPriority.bind(this)}>Priority</Button>{/* </Col> */}
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByStartDate.bind(this)}>Start Date {this.state.startDateSort}</Button>{' '}{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByEndtDate.bind(this)}>End Date</Button>{' '}{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByProjectPriority.bind(this)}>Priority</Button>{' '}{/* </Col> */}
         {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}
    
          </FormGroup>

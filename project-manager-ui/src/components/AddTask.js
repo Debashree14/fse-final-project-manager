@@ -9,8 +9,10 @@ import { compose } from 'redux';
 import EditTaskModal from './EditTaskModal';
 import CustomModal from './Modal.js';
 import GenericModal from './GenericModal.js';
+import GenericModalParentTask from './GenericModalParentTask';
+import GenericModalUser from './GenericModalUser';
 import ViewTask from './ViewTask.js';
-import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
+import Settings from '../Settings';
 
 
 export default class AddTask extends React.Component {
@@ -18,25 +20,53 @@ export default class AddTask extends React.Component {
     super(props);
     this.state = {
       addForm:{
-        taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0],projectManagerName:""
+        taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0],projectName:"",taskUserName:"",
+        project:{projectId:""},parentTask:{parentTaskId:""},user:{userId:""},status:"",isParentTask:false
       },
       modal:false,
-      isOpen:true
+      modalForProject:false,
+      modalForParentTask:false,
+      modalForUser:false,
 
     };
 
     this.addTask=this.addTask.bind(this);
+    this.addParentTask=this.addParentTask.bind(this);
+    this.addNormalTask=this.addNormalTask.bind(this);
     this.onChange=this.onChange.bind(this);
     this.searchProject=this.searchProject.bind(this);
+    this.searchParentTask=this.searchParentTask.bind(this);
+    this.searchUser=this.searchUser.bind(this);
+    this.closeCancelModal=this.closeCancelModal.bind(this);
+    this.closeCancelProjectModal=this.closeCancelProjectModal.bind(this);
+    this.closeCancelUserModal=this.closeCancelUserModal.bind(this);
+    this.closeCancelParentTaskModal=this.closeCancelParentTaskModal.bind(this);
+    this.isFieldDisabled=this.isFieldDisabled.bind(this);
    // this.reset=this.reset.bind(this);
   }
   
-  /*onSliderChange = (value) => {
-    log(value);
+  closeCancelUserModal(){
+
     this.setState({
-      value,
+      modal:false,
+      modalForUser:false
     });
-  }*/
+  }
+  closeCancelProjectModal(){
+
+    this.setState({
+      modal:false,
+      modalForProject:false
+    });
+  }
+  closeCancelParentTaskModal(){
+
+    this.setState({
+      modal:false,
+      modalForParentTask:false
+    });
+  }
+  
   
   onChange(fieldName,value){
     // /console.log(fieldName,value);
@@ -47,15 +77,20 @@ export default class AddTask extends React.Component {
       addForm.priority=value[1];
       addForm.slider=[value[0],value[1]];
       console.log( addForm.slider);
-    }else if(fieldName=="parentTaskName"){
-      addForm.parentTaskName=value
     }else if(fieldName=="startDate"){
       addForm.startDate=value
     }else if(fieldName=="endDate"){
       addForm.endDate=value
-    }else if(fieldName=="projectManagerName"){
-      addForm.projectManagerName=value;
-    }
+    }else if(fieldName=="projectName"){
+      addForm.projectName=value;
+    }else if(fieldName=="parentTaskName"){
+      addForm.parentTaskName=value
+    }else if(fieldName=="taskUserName"){
+      addForm.taskUserName=value;
+    }else if(fieldName=="check"){
+      addForm.isParentTask=value;
+    } 
+   
 
     this.setState({addForm})
 
@@ -63,11 +98,89 @@ export default class AddTask extends React.Component {
   searchProject(){
 
     this.setState({
+      modalForProject:true,
       modal:true
     })
   }
+  searchParentTask(){
+
+    this.setState({
+      modalForParentTask:true,
+      modal:true
+    })
+  }
+  searchUser(){
+
+    this.setState({
+      modalForUser:true,
+      modal:true
+    })
+  }
+
+  isFieldDisabled(){
+    if(this.state.addForm.isParentTask){
+      return true;
+    }else{
+      return false;
+    }
+  }
   addTask(){
   
+   if(this.state.addForm.isParentTask){
+     this.addParentTask();
+   }else{
+     this.addNormalTask();
+   }
+  }
+  addParentTask(){
+   
+
+    const addTaskForm=this.state.addForm;
+    const addParentTask={}
+
+    addParentTask.parentTaskName=addTaskForm.taskName;
+    var url = Settings.baseUrl+Settings.ADD_PARENT_TASK;
+    console.log("addParentTask",addParentTask);
+    var newParentTaskList=this.props.parentTaskList;
+//var task = {username: 'example'};
+
+
+
+console.log(JSON.stringify(addParentTask));
+fetch(url, {
+  method: 'POST', // or 'PUT'
+  body: JSON.stringify(addParentTask), // data can be `string` or {object}!
+  
+  //mode: 'no-cors',
+  headers:{
+    'content-type': 'application/json',
+    'Access-Control-Allow-Origin':'*'
+  }
+}).then(res => {  return res.json();})
+.then(response => {console.log('Success:', response)
+console.log("newParentTaskList",newParentTaskList);
+newParentTaskList.unshift(response.parentTaskResponse);
+      console.log("newParentTaskList after push",newParentTaskList);
+newParentTaskList.unshift(response.parentTaskResponse);
+      this.props.updateParentTaskList(newParentTaskList);
+      var params = {
+        force: true
+        }
+        /* console.log("this",this);
+        console.log("this",this.refs);
+        console.log("this",this.refs.childProjectGrid);
+        console.log("this",this.refs.childProjectGrid.gridApi); */
+    
+    //  this.refs.childProjectGrid.gridApi.refreshCells(params);
+toast.success("Task added successfully")})
+
+
+.catch(error => console.error('Error:', error));
+
+
+  }
+  addNormalTask(){
+    alert("addNormalTask");
     var moment = require("moment");
     const addTask=this.state.addForm;
   
@@ -104,16 +217,41 @@ export default class AddTask extends React.Component {
        toast.warn("End Date cannot be earlier/smaller than the Start Date");
      }
     }
-    if(addTask.taskName=="" || addTask.taskName==null || addTask.taskName==undefined){
-      toast.error("Task cannot be blank");
+    if(addTask.parentTaskName=="" || addTask.parentTaskName==null || addTask.parentTaskName==undefined){
+      toast.error("Parent Task cannot be blank");
       return;
     }
+    if(addTask.taskUserName=="" || addTask.taskUserName==null || addTask.taskUserName==undefined){
+      toast.error("User cannot be blank");
+      return;
+    }
+    if(addTask.projectName=="" || addTask.projectName==null || addTask.projectName==undefined){
+      toast.error("Project cannot be blank");
+      return;
+    }
+    
  
     const task=addTask;
   /*********************** */
 
-  var url = 'http://localhost:8081/taskManager/addTask';
+  const taskUserId= this.props.userList.find(user=>user.userName===addTask.taskUserName).userId;
+  const parentTaskId= this.props.parentTaskList.find(parentTask=>parentTask.parentTaskName===addTask.parentTaskName).parentTaskId;
+  const projectId= this.props.projectList.find(project=> project.projectName === addTask.projectName).projectId
+  /*console.log("***uId",uId);
+  alert("test");
+  console.log(this.props.userList.filter(user=>user.userName===addProject.projectManagerName));*/
+ /*********************** */
+ task.status="InProgress";
+ task.user.userId=taskUserId;
+ task.parentTask.parentTaskId=parentTaskId;
+ task.project.projectId=projectId;
+
+
+  var url = Settings.baseUrl+Settings.ADD_TASK;
+  var newTaskList=this.props.alltaskList;
 //var task = {username: 'example'};
+
+
 
 console.log(JSON.stringify(task));
 fetch(url, {
@@ -127,9 +265,27 @@ fetch(url, {
   }
 }).then(res => {  return res.json();})
 .then(response => {console.log('Success:', response)
+console.log("newUserLnewProjectListist",newTaskList);
+newTaskList.unshift(response.taskListResponse);
+      console.log("newProjectList after push",newTaskList);
+      this.props.updateAllTaskList(newTaskList);
+      var params = {
+        force: true
+        }
+        /* console.log("this",this);
+        console.log("this",this.refs);
+        console.log("this",this.refs.childProjectGrid);
+        console.log("this",this.refs.childProjectGrid.gridApi); */
+    
+    //  this.refs.childProjectGrid.gridApi.refreshCells(params);
 toast.success("Task added successfully")})
+
+
 .catch(error => console.error('Error:', error));
+  
+
   }
+  
 
   reset(){
   
@@ -143,6 +299,13 @@ toast.success("Task added successfully")})
    addForm.slider=[0,0];
    this.setState({addForm})
 
+  }
+  closeCancelModal(){
+
+    this.setState({
+      modal:false,
+     
+    });
   }
   render() {
     
@@ -161,12 +324,12 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
     <Container style={containerStyle}>
       <Form>
       <FormGroup row>
-          <Label for="projectManagerLabel" sm={2}>Project :</Label>
+          <Label for="projectNameLabel" sm={2}>Project :</Label>
           <Col sm={5}>
-            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
+            <Input type="text" name="projectName" id="projectName" disabled={this.isFieldDisabled()} readOnly={true} placeholder="" value={formData.projectName} onChange={e => this.onChange("projectName",e.target.value)}/>
           </Col>
           <Col sm={2}>
-            <Button  color="secondary" onClick={()=>this.searchProject()}>Search</Button>
+            <Button  color="secondary" disabled={this.isFieldDisabled()}  onClick={()=>this.searchProject()}>Search</Button>
           </Col>
         </FormGroup>
         <FormGroup row>
@@ -181,7 +344,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
           <Col sm={3}>
         {/* <Label check> */}
             <br/>
-            <Input type="checkbox" name="check" id="check" checked={this.state.ischecked} onChange={e=>this.onChange("check",e.target.checked)}/>
+            <Input type="checkbox" name="check" id="check" checked={formData.isParentTask} onChange={e=>this.onChange("check",e.target.checked)}/>
            <b>Parent Task</b>
           </Col>
         </FormGroup>
@@ -193,35 +356,35 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
              value={15} step={1} max={30} min={0} orientation="horizontal" reversed={true} disabled="disabled" />
             </Col>*/}
             {<Col sm={6}>
-             <Range allowCross={false} min={0} max={30} name="priority" value={formData.slider} onChange={e => this.onChange("priority",e)} />
+             <Range allowCross={false} min={0} max={30} name="priority" disabled={this.isFieldDisabled()} value={formData.slider} onChange={e => this.onChange("priority",e)} />
             </Col>}
         </FormGroup>
         <FormGroup row>
           <Label for="parentTaskLabel" sm={2}>Parent Task :</Label>
           <Col sm={5}>
-            <Input type="text" name="parentTaskName" id="parentTask" placeholder="" value={formData.parentTaskName} onChange={e => this.onChange("parentTaskName",e.target.value)}/>
+            <Input type="text" name="parentTaskName" id="parentTask" disabled={this.isFieldDisabled()} placeholder="" readOnly={true} value={formData.parentTaskName} onChange={e => this.onChange("parentTaskName",e.target.value)}/>
           </Col>
           <Col sm={2}>
-            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
+            <Button  color="secondary"  disabled={this.isFieldDisabled()} onClick={()=>this.searchParentTask()}>Search</Button>
           </Col>
         </FormGroup>
         <FormGroup row>
           <Label for="startDateLabel" sm={2}>Start Date:</Label>
           <Col sm={3}>
-            <Input type="date" name="startDate" id="startDate" placeholder="" value={formData.startDate} onChange={e => this.onChange("startDate",e.target.value)}/>
+            <Input type="date" name="startDate" id="startDate" placeholder="" value={formData.startDate} disabled={this.isFieldDisabled()} onChange={e => this.onChange("startDate",e.target.value)}/>
           </Col>
           <Label for="endDateLabel" sm={2}>End Date:</Label>
           <Col sm={3}>
-            <Input type="date" name="endDate" id="endDate" placeholder="" value={formData.endDate} onChange={e => this.onChange("endDate",e.target.value)} />
+            <Input type="date" name="endDate" id="endDate" placeholder="" value={formData.endDate}  disabled={this.isFieldDisabled()}onChange={e => this.onChange("endDate",e.target.value)} />
           </Col>
         </FormGroup>
         <FormGroup row>
-          <Label for="projectManagerLabel" sm={2}>Manager :</Label>
+          <Label for="taskUserLabel" sm={2}>User :</Label>
           <Col sm={5}>
-            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
+            <Input type="text" name="taskUserName" id="taskUserName" placeholder="" readOnly={true} disabled={this.isFieldDisabled()} value={formData.taskUserName} onChange={e => this.onChange("taskUserName",e.target.value)}/>
           </Col>
           <Col sm={2}>
-            <Button  color="secondary" onClick={()=>this.addProject()}>Search</Button>
+            <Button  color="secondary"  disabled={this.isFieldDisabled()} onClick={()=>this.searchUser()}>Search</Button>
           </Col>
         </FormGroup>
         
@@ -229,50 +392,64 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
         
         
       
+
       </Form>
       <Button  color="secondary" onClick={()=>this.addTask()}>Add Task</Button>{' '}
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
        </Container>
        {<GenericModal
                     className="modal"
-                    show={this.state.modal}
+                    show={this.state.modalForProject}
                     close={this.closeCancelModal}
                     columnDefs={this.columnDefs}
                     gridData={this.props.data}
                     formData={this.state.addForm}
-                    closeCancleModal={this.closeCancelModal}
+                    closeCancelModal={this.closeCancelProjectModal}
                     onChange={this.onChange}
                     updateTask={this.updateTask}
                     updateGrid={this.updateGrid}
+                    projectList={this.props.projectList}
+                    userList={this.props.userList}
+                    parentTaskList={this.props.parentTaskList}
                     >
                         Maybe aircrafts fly very high because they don't want to be seen in plane sight?
     </GenericModal> }
-    {/* <Modal className="open-modal" isOpen={this.state.isOpen}  backdrop={false} >
-            <ModalHeader className="modal-header">Modal title</ModalHeader> }
-            <ModalBody className="modal-body">
-           
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </ModalBody>
-             <ModalFooter className="modal-footer">
-              <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-              <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-            </ModalFooter> 
-  </Modal> */}
-      {/*  <MDBContainer>
-       
-        <MDBModal isOpen={this.state.modal} centered>
-          <MDBModalHeader>MDBModal title</MDBModalHeader>
-          <MDBModalBody>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
-          </MDBModalBody>
-          <MDBModalFooter>
-            <MDBBtn color="secondary" onClick={alert("test2")}>Close</MDBBtn>
-            <MDBBtn color="primary">Save changes</MDBBtn>
-          </MDBModalFooter>
-        </MDBModal>
-      </MDBContainer> */}
+    {<GenericModalParentTask
+                    className="modal"
+                    show={this.state.modalForParentTask}
+                    close={this.closeCancelModal}
+                    columnDefs={this.columnDefs}
+                    gridData={this.props.data}
+                    formData={this.state.addForm}
+                    closeCancelModal={this.closeCancelParentTaskModal}
+                    onChange={this.onChange}
+                    updateTask={this.updateTask}
+                    updateGrid={this.updateGrid}
+                    projectList={this.props.projectList}
+                    userList={this.props.userList}
+                    parentTaskList={this.props.parentTaskList}
+                    >
+                        Maybe aircrafts fly very high because they don't want to be seen in plane sight?
+    </GenericModalParentTask> }
+    {<GenericModalUser
+                    className="modal"
+                    show={this.state.modalForUser}
+                    close={this.closeCancelUserModal}
+                    columnDefs={this.columnDefs}
+                    gridData={this.props.data}
+                    formData={this.state.addForm}
+                    closeCancelModal={this.closeCancelUserModal}
+                    onChange={this.onChange}
+                    updateTask={this.updateTask}
+                    updateGrid={this.updateGrid}
+                    projectList={this.props.projectList}
+                    userList={this.props.userList}
+                    parentTaskList={this.props.parentTaskList}
+                    role={"taskuser"}
+                    >
+                        Maybe aircrafts fly very high because they don't want to be seen in plane sight?
+    </GenericModalUser> }
+    
        </div>
     );
   }

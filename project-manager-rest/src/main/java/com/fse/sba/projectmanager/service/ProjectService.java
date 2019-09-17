@@ -59,8 +59,11 @@ public class ProjectService {
         projectDTO.setManagerFirstName(project.getUser().getFirstName());
         projectDTO.setManagerLastName(project.getUser().getLastName());
         projectDTO.setManagerName(project.getUser().getFirstName().concat(ProjectManagerConstants.SPACE_STR).concat(project.getUser().getLastName()));
+        //System.out.println("**********project1="+project);
         projectDTO.setTotalTasks(project.getTasks() != null ? project.getTasks().size():0);
+       // System.out.println("**********project="+project);
         projectDTO.setTatalCompletedTasks(project.getTasks() !=null ?((int)project.getTasks().stream().filter(projectEntity-> projectEntity.getStatus().equals(ProjectManagerConstants.COMPLETED_STS)).count()):0);
+        projectDTO.setKey(project.getProjectId());
         return projectDTO;
 
     }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import com.fse.sba.projectmanager.service.UserService;
 import com.fse.sba.projectmanager.entity.User;
 import com.fse.sba.projectmanager.entity.ParentTask;
-
+@CrossOrigin(origins = {"http://localhost:9000"})
 @RestController
 @RequestMapping("/projectmanager/api")
 public class UserController {

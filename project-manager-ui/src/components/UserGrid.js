@@ -2,9 +2,10 @@ import React from 'react';
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,Container,Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import EditTaskModal from './EditTaskModal.js';
-import CustomModal from './Modal.js';
+import UserModal from './UserModal.js';
 import SearchBar from  './SearchBar';
-import ButtonCellRenderer from '../renderer/ButtonCellRenderer.js';
+import UserButtonCellRenderer from '../renderer/UserButtonCellRenderer.js';
+import Settings from '../Settings.js';
 
 export default class UseGrid extends React.Component {
 
@@ -13,10 +14,13 @@ export default class UseGrid extends React.Component {
         super(props);
         this.state = {
          modal:false,
-         context: { componentParent: this, editModal: CustomModal},
-         modalUpdateForm:{
-          taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0]
-        }
+         context: { componentParent: this, editModal: UserModal},
+         editUserModalForm:{
+          userId:"",firstName:"",lastName:"",employeeId:""
+        },
+         employeeIdSort:"asc",
+         firstNameSort:"asc",
+         lastNameSort:"asc"         
           //frameworkComponents: { taskCellRenderer: TaskCellRenderer },
         // loadingCellRenderer: "taskCellRenderer"
         }
@@ -45,23 +49,25 @@ export default class UseGrid extends React.Component {
          '<span>'+params.value+'</span>'
        // 'Value is <b>'+params.value+'</b></div>';
      }
-        
+       this.defaultColDef={ sortable: true }
         this.columnDefs=[{
-          headerName: "Employee Id", field: "employeeId",width:100
-        }, {
-          headerName: "First Name", field: "firstName",cellRenderer:cellRendertask,width:250
+          headerName: "User Id", field: "userId",width:100,hide:true
         },{
-          headerName: "Last Name", field: "lastName",width:100,cellRenderer:otherRendertask
+          headerName: "Employee Id", field: "employeeId",width:100,cellRenderer:otherRendertask, colId:"employeeId"
+        }, {
+          headerName: "First Name", field: "firstName",cellRenderer:cellRendertask,width:250,colId:"firstName"
+        },{
+          headerName: "Last Name", field: "lastName",width:250,cellRenderer:cellRendertask,colId:"firstName"
         },
         {
-          headerName: "Update", field: "" ,width:130, cellRendererFramework:ButtonCellRenderer//,
+          headerName: "Edit", field: "" ,width:130, cellRendererFramework:UserButtonCellRenderer//,
        /*  cellRendererParams:{
             modal:{this.state.modal}
           }*/
-         // cellRendererFramework: (props) => { return ( <Button color="secondary" onClick={this.editTask.bind(this)}>Click</Button> ); }//cellRenderer: TaskCellRenderer//
+          //cellRendererFramework: (props) => { return ( <Button color="secondary" onClick={this.editTask.bind(this)}>Edit</Button> ); }//cellRenderer: TaskCellRenderer//
         },{
-          headerName: "Suspend", field: "", cellRendererFramework:ButtonCellRenderer,width:130
-          //cellRenderer: "taskCellRenderer",//cellRenderer:buttonRender
+          headerName: "Delete", field: "", cellRendererFramework:UserButtonCellRenderer,width:130
+          //cellRendererFramework: (props) => { return ( <Button color="secondary" onClick={this.editTask.bind(this)}>Delete</Button> ); }//cellRenderer: TaskCellRenderer//
         }]
 
         this.editTask=this.editTask.bind(this);
@@ -71,7 +77,7 @@ export default class UseGrid extends React.Component {
         this.setModalData=this.setModalData.bind(this);
         this.closeCancelModal=this.closeCancelModal.bind(this);
         this.onChange=this.onChange.bind(this);
-        this.updateTask=this.updateTask.bind(this);
+        this.updateUser=this.updateUser.bind(this);
         this.onChangeOfSearchText=this.onChangeOfSearchText.bind(this);
 
 
@@ -86,16 +92,16 @@ export default class UseGrid extends React.Component {
      
      // alert("edit task in task grid");
     }
-    updateTask(updatedData) {
+    updateUser(updatedData) {
       //alert("endTask");
       console.log("updatedData",updatedData);
-      var url = 'http://localhost:8081/taskManager/updateTask';
+      var url = Settings.baseUrl+Settings.UPDATE_USER;
       //var task = {username: 'example'};
-      var updateTask=Object.assign({},updatedData)
-      console.log("updateTask",JSON.stringify(updateTask));
+      var updateUser=Object.assign({},updatedData)
+      console.log("updateUser",JSON.stringify(updateUser));
       fetch(url, {
-        method: 'POST', // or 'PUT'
-        body: JSON.stringify(updateTask), // data can be `string` or {object}!
+        method: 'PUT', // or 'PUT'
+        body: JSON.stringify(updateUser), // data can be `string` or {object}!
         
         //mode: 'no-cors',
         headers:{
@@ -119,21 +125,19 @@ export default class UseGrid extends React.Component {
     };
     onChange(fieldName,value){
       // /console.log(fieldName,value);
-      let modalUpdateForm=this.state.modalUpdateForm;
-      if(fieldName=="taskName"){
-        modalUpdateForm.taskName=value
-      }else if(fieldName=="priority"){
-        modalUpdateForm.priority=value[1];
-        modalUpdateForm.slider=[value[0],value[1]];
-        console.log( modalUpdateForm.slider);
-      }else if(fieldName=="parentTaskName"){
-        modalUpdateForm.parentTaskName=value
-      }else if(fieldName=="startDate"){
-        modalUpdateForm.startDate=value
-      }else if(fieldName=="endDate"){
-        modalUpdateForm.endDate=value
-      }
-      this.setState({modalUpdateForm})
+      
+      let editUserModalForm=this.state.editUserModalForm;
+    console.log(fieldName,value);
+    if(fieldName=="firstName"){
+      editUserModalForm.firstName=value
+    }else if(fieldName=="lastName"){
+      editUserModalForm.lastName=value
+    }else if(fieldName=="employeeId"){
+      editUserModalForm.employeeId=value
+    }
+
+    this.setState({editUserModalForm})
+      
     }
     toggleModal(event){
 
@@ -153,50 +157,69 @@ export default class UseGrid extends React.Component {
     setModalData(data){
 
       this.setState({
-        modalUpdateForm:data
+        editUserModalForm:data
       });
     }
-    sortByStartDate(){
+    
+    sortByFirstName(){
       var sortType;
       //alert(this.state.startDateSort);
       var sort = [
         {
-          colId: "projectStartDate",
-          sort: this.state.startDateSort
+          colId: "firstName",
+          sort: this.state.sortByFirstName
         }
       ];
           
       this.gridApi.setSortModel(sort);
-      if(this.state.startDateSort === "asc")
+      if(this.state.sortByFirstName === "asc")
          sortType="desc";
       else
          sortType="asc";
 
 
       this.setState({
-        startDateSort:sortType
+        sortByFirstName:sortType
       })
     }
   
-    sortByEndtDate(){
+    sortByLastName(){
+      var sortType;
       var sort = [
         {
-          colId: "projectEndDate",
-          sort: "asc"
+          colId: "lastName",
+          sort: this.state.sortByLastName
         }
       ];
-      console.log(this.gridApi);
       this.gridApi.setSortModel(sort);
+      if(this.state.sortByLastName === "asc")
+         sortType="desc";
+      else
+         sortType="asc";
+
+
+      this.setState({
+        sortByLastName:sortType
+      })
     }
-    sortByProjectPriority(){
+    sortByEmployeeId(){
+      var sortType;
       var sort = [
         {
-          colId: "projectPriority",
-          sort: "asc"
+          colId: "employeeId",
+          sort: this.state.sortByEmployeeId
         }
       ];
-      console.log(this.gridApi);
       this.gridApi.setSortModel(sort);
+      if(this.state.sortByEmployeeId === "asc")
+         sortType="desc";
+      else
+         sortType="asc";
+
+
+      this.setState({
+        sortByEmployeeId:sortType
+      })
     }
      dateComparator(date1, date2) {
       var date1Number = monthToComparableNumber(date1);
@@ -232,15 +255,16 @@ export default class UseGrid extends React.Component {
  <FormGroup row>
          <SearchBar onChangeOfSearchText={this.onChangeOfSearchText}/>
          <b>Sort By:</b>
-         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByStartDate.bind(this)}>Start Date {this.state.startDateSort}</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByEndtDate.bind(this)}>End Date</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByProjectPriority.bind(this)}>Priority</Button>{/* </Col> */}
-        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={()=>this.addProject()}>Completed</Button>{/* </Col> */}
+         {/* <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByFirstName.bind(this)}>First Name{this.state.sortByFirstName}</Button>{'  '}{/* </Col> */}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByLastName.bind(this)}>Last Name{this.state.sortByLastName}</Button>{/* </Col> */}{'  '}
+        {/*  <Col sm={2}> */}<Button  color="secondary" onClick={this.sortByEmployeeId.bind(this)}>Employee Id {this.state.sortByEmployeeId}</Button>{/* </Col> */}
+        
    
          </FormGroup>
     <div  className="ag-theme-balham gridAg" >
         <AgGridReact
             columnDefs={this.columnDefs}
+            defaultColDef={this.defaultColDef}
             rowData={this.props.data}
             rowHeight={100}
             frameworkComponents={this.state.frameworkComponents}
@@ -254,20 +278,20 @@ export default class UseGrid extends React.Component {
         </AgGridReact>
         
     </div>
-    {<CustomModal
+    {<UserModal
                     className="modal"
                     show={this.state.modal}
                     close={this.closeCancelModal}
                     columnDefs={this.columnDefs}
                     gridData={this.props.data}
-                    formData={this.state.modalUpdateForm}
+                    formData={this.state.editUserModalForm}
                     closeCancleModal={this.closeCancelModal}
                     onChange={this.onChange}
-                    updateTask={this.updateTask}
+                    updateUser={this.updateUser}
                     updateGrid={this.updateGrid}
                     >
                         Maybe aircrafts fly very high because they don't want to be seen in plane sight?
-    </CustomModal> }
+    </UserModal> }
    </div>
         );
 

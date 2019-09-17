@@ -1,0 +1,63 @@
+drop database projectmanager;
+create database projectmanager;
+
+use projectmanager;
+
+
+create table Parent_Task(
+Parent_ID int not null AUTO_INCREMENT,
+Parent_Task varchar(300) null,
+PRIMARY KEY (Parent_ID)
+);
+
+ALTER TABLE Parent_Task AUTO_INCREMENT = 1001;
+
+create table User(
+User_ID int not null AUTO_INCREMENT,
+First_Name varchar(200),
+Last_Name  varchar(200),
+Employee_ID varchar(20),
+Active_IN   char(1),
+PRIMARY KEY (User_ID)
+
+);
+
+ALTER TABLE User AUTO_INCREMENT = 4001;
+
+create table Project(
+Project_ID int not null AUTO_INCREMENT,
+User_ID int,
+Task_ID int,
+Project varchar(300),
+Start_Date datetime,
+End_Date datetime,
+Priority int,
+PRIMARY KEY (Project_ID)
+
+);
+
+
+ALTER TABLE Project AUTO_INCREMENT = 2001;
+
+create table Task
+(
+Task_ID int not null AUTO_INCREMENT,
+Parent_ID int,
+Project_ID int,
+User_ID  int,
+Task varchar(300),
+Start_Date datetime,
+End_Date datetime,
+Priority int ,
+Status varchar(30),
+PRIMARY KEY (Task_ID),
+FOREIGN KEY (Parent_ID) REFERENCES Parent_Task(Parent_ID),
+FOREIGN KEY (Project_ID) REFERENCES Project(Project_ID),
+FOREIGN KEY (User_ID) REFERENCES User(User_ID)
+);
+
+ALTER TABLE Task AUTO_INCREMENT = 3001;
+
+ALTER TABLE Project add FOREIGN KEY (User_ID) REFERENCES User(User_ID);
+ALTER TABLE Project add FOREIGN KEY (Task_ID) REFERENCES Task(Task_ID);
+

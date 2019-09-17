@@ -11,25 +11,30 @@ import SearchBar from './SearchBar.js';
 import Autocomplete from 'react-autocomplete';
 
 
-export default class GenericModal extends React.Component{
+export default class GenericModalUser extends React.Component{
 
   constructor(props){
     super(props);
     this.state={
-      value:"",
-      show:true
+      value:"" ,
+      item:{}    
     };
     this.onChange=this.onChange.bind(this);
-    this.matchCountry=this.matchCountry.bind(this);
+    this.matchUser=this.matchUser.bind(this);
     this.onSelect=this.onSelect.bind(this);
 
   }
 
   onSelect(val){
-
+    console.log(val);
     this.props.closeCancelModal();
-    this.setState({show:false},this.props.onChange("projectName",val))
-
+   // this.setState({show:false})
+   if(this.props.role ==="manager"){
+    this.props.onChange("projectManagerName",val)
+   }
+   else if(this.props.role==="taskuser"){
+    this.props.onChange("taskUserName",val)
+   }
   }
 
   onChange(val){
@@ -37,17 +42,22 @@ export default class GenericModal extends React.Component{
     this.setState({
       value:val
     })
+
     
   }
-  matchCountry(state, value) {
-    //console.log(state);
-    //console.log(value);
+  matchUser(state, value) {
+   
+    //console.log("matchUser",value);
+
     return (
-      state.projectName.toLowerCase().indexOf(value.toLowerCase()) !== -1 //||
-      //state.key.toLowerCase().indexOf(value.toLowerCase()) !== -1
+     
+      state.userName.toLowerCase().indexOf(value.toLowerCase()) !== -1 //||
+      //state.key.indexOf(value.toLowerCase()) !== -1
      //state.length >= 1
     // state.key.indexOf(value.toLowerCase()) !== -1
+      
     );
+  
   }
   render(){
 
@@ -62,40 +72,24 @@ export default class GenericModal extends React.Component{
                   paddingRight:'150px'
               }}>
               <div className="modal-header">
-                  <h5>Search Project</h5>
+                  <h5>Search User</h5>
                   <span className="close-modal-btn" onClick={this.props.closeCancelModal}>×</span>
               </div>
-              <div className="modal-body">
-              
-              
-              {/* <Autocomplete
-getItemValue={(item) => item.label}
-items={[
-  { label: 'apple',key:1 },
-  { label: 'banana',key:2 },
-  { label: 'pear',key:3 }
-]}
-renderItem={(item, isHighlighted) =>
-  <div style={{ background: isHighlighted ? 'lightgray' : 'white' }}>
-      key={ item.key }
-    {item.label} 
-    </div>
-}
-value={this.state.value}
-//e => this.onChange("projectManagerName",e.target.value)
-onChange={(e) => this.onChange(e.target.value)}
-onSelect={(val) => value = val}
-/> */}
+              <div className="modal-body" >
+                      
 
-<Autocomplete
+            <Autocomplete
               value={ this.state.value }
              //inputProps={{ id: 'states-autocomplete' }}
               wrapperStyle={{ position: 'relative', display: 'inline-block' }}
               //items={ getCountry() }
-              items={this.props.projectList}
-              getItemValue={ item => item.projectName }
-              shouldItemRender={ this.matchCountry }
-              onChange={(event, value) => this.setState({ value }) }
+              items={this.props.userList}
+              getItemValue={ item => (item.userName) }
+            
+              shouldItemRender={ this.matchUser }
+              onChange={(event, value) => this.setState({ value:value,
+              item:event }) }
+             //onChange={(event, item) => this.setState({ item }) }
              //onSelect={ value => this.setState({ value }) }
               onSelect={(e)=>this.onSelect(e)}
               renderMenu={ children => (
@@ -106,8 +100,8 @@ onSelect={(val) => value = val}
               renderItem={ (item, isHighlighted) => (
                 <div
                   className={`item ${isHighlighted ? 'item-highlighted' : ''}`}
-                  key={ item.key } >
-                  { item.projectName }
+                  key={ item.userId } >
+                  { item.userName }
                 </div>
               )}
             />

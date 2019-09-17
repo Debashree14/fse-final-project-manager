@@ -9,41 +9,27 @@ import { compose } from 'redux';
 import TaskGrid from './TaskGrid';
 import ProjectGrid from './ProjectGrid';
 import SearchBar from  './SearchBar';
+import Settings from '../Settings.js';
+import GenericModalUser from './GenericModalUser';
 
 export default class AddProject extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       ischecked:false,
+      modal:false,
       addProjectForm:{
-        projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectPrioritySlider:[0,0]
-      },
-      projectList:[{projectId:5,
-        projectName:'PR1',
-        totalTasks:5,
-        tatalCompletedTasks:3,
-        projectStartDate:"23/06/2019",
-        projectEndDate:"23/08/2019",
-        projectPriority:20},
-        {projectId:8,
-          projectName:'PR2',
-          totalTasks:5,
-          tatalCompletedTasks:3,
-          projectStartDate:"03/04/2019",
-          projectEndDate:"12/06/2019",
-          projectPriority:25},{projectId:5,
-            projectName:'PR3',
-            totalTasks:15,
-            tatalCompletedTasks:13,
-            projectStartDate:"03/06/2018",
-            projectEndDate:"23/10/2019",
-            projectPriority:2}]
-
+        projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""}
+      }
     };
 
-    this.addProject=this.addProject.bind(this);
+    this.addNewProject=this.addNewProject.bind(this);
     this.onChange=this.onChange.bind(this);
     this.reset=this.reset.bind(this);
+    this.searchManager=this.searchManager.bind(this);
+    this.closeCancelModal=this.closeCancelModal.bind(this);
+    this.fetchProjectList=this.fetchProjectList.bind(this);
+    this.fetchParentTaskList=this.fetchParentTaskList.bind(this);
   }
   
   /*onSliderChange = (value) => {
@@ -52,7 +38,20 @@ export default class AddProject extends React.Component {
       value,
     });
   }*/
-  
+  searchManager(){
+
+    this.setState({
+      modalForUser:true,
+      modal:true
+    })
+  }
+  closeCancelModal(){
+
+    this.setState({
+      modal:false,
+      modalForProject:false
+    });
+  }
   onChange(fieldName,value){
     // /console.log(fieldName,value);
     let addProjectForm=this.state.addProjectForm;
@@ -75,7 +74,7 @@ export default class AddProject extends React.Component {
     this.setState({addProjectForm})
 
   }
-  addProject(){
+  addNewProject(){
   
     var moment = require("moment");
     const addProject=this.state.addProjectForm;
@@ -113,15 +112,21 @@ export default class AddProject extends React.Component {
        toast.warn("End Date cannot be earlier/smaller than the Start Date");
      }
     }
-    if(addProject.projectName=="" || addProject.projectName==null || addProject.projectName==undefined){
-      toast.error("Task cannot be blank");
+    if(addProject.projectManagerName=="" || addProject.projectManagerName==null || addProject.projectManagerName==undefined){
+      toast.error("Project Manager Name cannot be blank");
       return;
     }
  
     const project=addProject;
+   
+   const managerUserId= this.props.userList.find(user=>user.userName===addProject.projectManagerName).userId;
+   /*console.log("***uId",uId);
+   alert("test");
+   console.log(this.props.userList.filter(user=>user.userName===addProject.projectManagerName));*/
   /*********************** */
-
-  var url = 'http://localhost:8081/taskManager/addProject';
+  project.user.userId=managerUserId;
+  var url = Settings.baseUrl+Settings.ADD_PROJECT;
+  var newProjectList=this.props.projectList;
 //var task = {username: 'example'};
 
 console.log(JSON.stringify(project));
@@ -136,7 +141,21 @@ fetch(url, {
   }
 }).then(res => {  return res.json();})
 .then(response => {console.log('Success:', response)
-toast.success("Task added successfully")})
+
+console.log("newUserLnewProjectListist",newProjectList);
+newProjectList.unshift(response.projectResponse);
+      console.log("newProjectList after push",newProjectList);
+      this.props.updateProjectGrid(newProjectList);
+      var params = {
+        force: true
+        }
+        //console.log("this",this);
+        //console.log("this",this.refs);
+        //console.log("this",this.refs.childProjectGrid);
+      //  console.log("this",this.refs.childProjectGrid.gridApi);
+    
+      this.refs.childProjectGrid.gridApi.refreshCells(params);
+toast.success("Project added successfully")})
 .catch(error => console.error('Error:', error));
   }
 
@@ -151,6 +170,65 @@ toast.success("Task added successfully")})
    addProjectForm.projectPrioritySlider=[0,0];
    this.setState({addProjectForm})
 
+  }
+  fetchParentTaskList(){
+     //this.props.getAllUsers();
+  // getAllUsers(){
+
+    var userResponse;
+    var url = Settings.baseUrl+Settings.GET_ALL_PARENT_TASK
+    console.log(url);
+    fetch(url)
+    .then(res => {//console.log(res.json())
+     // console.log("userList",res.json());
+       // console.log(res.status);
+      //  console.log(res.value);
+        return res.json();
+        console.log("userList",res.json());
+    })
+    .then(data => {console.log('Success:', data)
+  
+     
+
+      /* this.setState({
+        userList:data.userResponseList
+      }); */
+      this.props.updateParentTaskList(data.parentTaskResponseList);
+    }).catch(error => console.error('Error:', error));
+    
+// }
+  }
+  
+  fetchProjectList(){
+     //this.props.getAllUsers();
+  // getAllUsers(){
+
+    var userResponse;
+    var url = Settings.baseUrl+Settings.GET_ALL_PROJECT
+    console.log(url);
+    fetch(url)
+    .then(res => {//console.log(res.json())
+     // console.log("userList",res.json());
+       // console.log(res.status);
+      //  console.log(res.value);
+        return res.json();
+        console.log("userList",res.json());
+    })
+    .then(data => {console.log('Success:', data)
+  
+      userResponse=data;
+
+      /* this.setState({
+        userList:data.userResponseList
+      }); */
+      this.props.updateProjectGrid(data.projectResponseList);
+    }).catch(error => console.error('Error:', error));
+    
+// }
+  }
+  componentDidMount(){
+   this.fetchProjectList();
+   this.fetchParentTaskList();
   }
   render() {
     
@@ -217,23 +295,40 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
         <FormGroup row>
           <Label for="projectManagerLabel" sm={3}>Manager :</Label>
           <Col sm={5}>
-            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
+            <Input type="text" name="projectManagerName" id="projectManagerName" placeholder="" readOnly={true} value={formData.projectManagerName} onChange={e => this.onChange("projectManagerName",e.target.value)}/>
           </Col>
           <Col sm={2}>
-            <Button  color="primary" onClick={()=>this.addProject()}>Search</Button>
+            <Button  color="primary" onClick={()=>this.searchManager()}>Search</Button>
           </Col>
         </FormGroup>
       </Form>
       <div>
-        <Button  color="secondary" onClick={()=>this.addProject()}>Add</Button>{' '}
+        <Button  color="secondary" onClick={()=>this.addNewProject()}>Add</Button>{' '}
         <Button color="secondary" onClick={()=>this.reset()}>Reset</Button>
         </div>
        </Container>
       
 
         <Container className="gridContainer">
-        < ProjectGrid data={this.state.projectList} updateGrid={this.updateGrid}/>
+        < ProjectGrid ref="childProjectGrid" data={this.props.projectList} updateGrid={this.updateGrid}/>
         </Container>
+        {<GenericModalUser
+                    className="modal"
+                    show={this.state.modal}
+                    close={this.closeCancelModal}
+                    columnDefs={this.columnDefs}
+                    gridData={this.props.data}
+                    formData={this.state.addForm}
+                    closeCancelModal={this.closeCancelModal}
+                    onChange={this.onChange}
+                    updateTask={this.updateTask}
+                    updateGrid={this.updateGrid}
+                    projectList={this.props.projectList}
+                    userList={this.props.userList}
+                    role={"manager"}
+                    >
+                        Maybe aircrafts fly very high because they don't want to be seen in plane sight?
+    </GenericModalUser> }
         </div>
     );
   }
