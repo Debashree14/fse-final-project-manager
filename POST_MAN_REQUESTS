@@ -1,0 +1,159 @@
+localhost:8082/projectmanager/api/user/add
+{
+	"employeeId":"399512",
+	"firstName":"Debashree",
+	"lastName":"Dutta",
+	"activeIn":"Y"
+}
+{
+	"employeeId":"214881",
+	"firstName":"Subhamoy",
+	"lastName":"Mandal",
+	"activeIn":"Y"
+}
+{
+	"employeeId":"214881",
+	"firstName":"Subhamoy",
+	"lastName":"Mandal",
+	"activeIn":"Y"
+}
+{
+	"employeeId":"399516",
+	"firstName":"Rupanjana",
+	"lastName":"Mitra",
+	"activeIn":"Y"
+}
+==================================================================
+localhost:8082/projectmanager/api/user
+{"Message":"Success","List Size":4,"users":[{"userId":4001,"employeeId":"399512","firstName":"Debashree","lastName":"Dutta","activeIn":"Y"},{"userId":4002,"employeeId":"214881","firstName":"Subhamoy","lastName":"Mandal","activeIn":"Y"},{"userId":4003,"employeeId":"399514","firstName":"Manajit","lastName":"Ghoshal","activeIn":"Y"},{"userId":4004,"employeeId":"399516","firstName":"Rupanjana","lastName":"Mitra","activeIn":"Y"}]}
+
+====================================================================
+localhost:8082/projectmanager/api/user/delete
+
+=====================================================================
+
+localhost:8082/projectmanager/api/user/update
+
+{
+	"userId":4005,
+	"employeeId":"399512",
+	"firstName":"Debashree",
+	"lastName":"Dutta Mandal",
+	"activeIn":"Y"
+}
+
+=========================================================================
+
+localhost:8082/projectmanager/api/user/userById/4004
+
+{
+	"userId":4005,
+	"employeeId":"399512",
+	"firstName":"Debashree",
+	"lastName":"Dutta Mandal",
+	"activeIn":"Y"
+}
+
+{"Message":"Successfully Fetched","user":{"userId":4004,"employeeId":"399516","firstName":"Rupanjana","lastName":"Mitra","activeIn":"Y"}}
+
+======================================================================================
+
+localhost:8082/projectmanager/api/parenttask/add
+
+localhost:8082/projectmanager/api/parenttask
+
+{"Message":"Success","List Size":3,"parentTasks":[{"parentTaskId":1001,"parentTaskName":"ParentTask1"},{"parentTaskId":1002,"parentTaskName":"ParentTask2"},{"parentTaskId":1003,"parentTaskName":"ParentTask3"}]}
+
+==========================================================================================
+
+localhost:8082/projectmanager/api/project/add
+
+{
+  "projectName":"Project2",
+  "projectPriority":15,
+   "user":{
+   "userId":4005
+}
+   
+}
+{"Message":"Successfully201 CREATED","project":{"projectId":2002,"projectName":"Project2","projectStartDate":null,"projectEndDate":null,"projectPriority":15,"user":{"userId":4005,"employeeId":"399512","firstName":"Debashree","lastName":"Dutta Mandal","activeIn":"Y"},"tasks":null}}
+
+========================================================================================================
+
+localhost:8082/projectmanager/api/project/update
+{
+  "projectId":2001,
+  "projectName":"Project1",
+  "projectPriority":20,
+   "user":{
+   "userId":4005
+}
+   
+}
+
+{"Message":"Successfully Updated","project":{"projectId":2001,"projectName":"Project1","projectStartDate":null,"projectEndDate":null,"projectPriority":20,"user":{"userId":4002,"employeeId":"214881","firstName":"Subhamoy","lastName":"Mandal","activeIn":"Y"},"tasks":null}}
+==============================================================================================================
+localhost:8082/projectmanager/api/project
+
+{"projects":[{"projectId":2001,"projectName":"Project1","projectStartDate":null,"projectEndDate":null,"projectPriority":20,"user":{"userId":4002,"employeeId":"214881","firstName":"Subhamoy","lastName":"Mandal","activeIn":"Y"},"tasks":[]},{"projectId":2002,"projectName":"Project2","projectStartDate":null,"projectEndDate":null,"projectPriority":15,"user":{"userId":4005,"employeeId":"399512","firstName":"Debashree","lastName":"Dutta Mandal","activeIn":"Y"},"tasks":[]},{"projectId":2003,"projectName":"Project3","projectStartDate":null,"projectEndDate":null,"projectPriority":20,"user":{"userId":4003,"employeeId":"399514","firstName":"Manajit","lastName":"Ghoshal","activeIn":"Y"},"tasks":[]}],"Message":"Success","List Size":3}
+
+==============================================================================================================================================
+
+localhost:8082/projectmanager/api/task/add
+
+{
+  "taskName":"Task1",
+  "priority":10,
+  "status":"Inprogress",
+   "user":{
+   "userId":4003
+  },
+  "project":{
+   "projectId":2001
+   },
+   "parentTask":{
+	"parentTaskId":1001
+}
+}
+
+RESPONSE:
+
+{
+    "task": {
+        "taskId": 3001,
+        "taskName": "Task1",
+        "startDate": null,
+        "entDate": null,
+        "priority": 10,
+        "status": "Inprogress",
+        "user": {
+            "userId": 4003,
+            "employeeId": "399514",
+            "firstName": "Manajit",
+            "lastName": "Ghoshal",
+            "activeIn": "Y"
+        },
+        "parentTask": {
+            "parentTaskId": 1001,
+            "parentTaskName": "ParentTask1"
+        },
+        "project": {
+            "projectId": 2001,
+            "projectName": "Project1",
+            "projectStartDate": null,
+            "projectEndDate": null,
+            "projectPriority": 20,
+            "user": {
+                "userId": 4002,
+                "employeeId": "214881",
+                "firstName": "Subhamoy",
+                "lastName": "Mandal",
+                "activeIn": "Y"
+            },
+            "tasks": []
+        }
+    },
+    "Message": "Successfully201 CREATED"
+}
+
+=========================================================================================

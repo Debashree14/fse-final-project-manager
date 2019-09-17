@@ -1,11 +1,10 @@
 import React from 'react';
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,Container,Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
-import EditTaskModal from './EditTaskModal.js';
-import CustomModal from './Modal.js';
+import ProjectModal from './ProjectModal.js';
 import SearchBar from  './SearchBar';
 
-import ButtonCellRenderer from '../renderer/ButtonCellRenderer.js';
+import ProjectButtonCellRenderer from '../renderer/ProjectButtonCellRenderer.js';
 
 export default class ProjectGrid extends React.Component {
 
@@ -19,16 +18,16 @@ export default class ProjectGrid extends React.Component {
          endDateSort:"asc",
          completedSort:"asc",
 
-         context: { componentParent: this, editModal: CustomModal},
-         modalUpdateForm:{
-          taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0]
+         context: { componentParent: this, editModal: ProjectModal},
+         editProjectModalForm:{
+          projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",managerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""},isSetStartDateEndDate:false
         }
           //frameworkComponents: { taskCellRenderer: TaskCellRenderer },
         // loadingCellRenderer: "taskCellRenderer"
         }
         const buttonRender=function(params){
           if (params.colDef.headerName === 'Edit'){
-          return '<Button  color="secondary"> onClick={'+this.editTask.bind(this)+'}'+params.colDef.headerName+'</Button>';
+          return '<Button  color="secondary"> onClick={'+this.editProject.bind(this)+'}'+params.colDef.headerName+'</Button>';
           }else{
             return '<Button  color="secondary"> onClick={'+this.endTask.bind(this)+'}'+params.colDef.headerName+'</Button>';
           }
@@ -81,6 +80,9 @@ export default class ProjectGrid extends React.Component {
         }, {
           headerName: "Project", field: "projectName",cellRenderer:cellRendertask,width:250,colId:'projectName'
         },{
+          headerName: "Project Manager Name", field: "managerName",cellRenderer:otherRendertask,width:250,colId:'managerName'
+        },
+        {
           headerName: "No. Of Tasks", field: "totalTasks",width:100,cellRenderer:otherRendertask,
         },{
           headerName: "Completed", field: "tatalCompletedTasks",cellRenderer:cellRendertask,width:250
@@ -93,17 +95,17 @@ export default class ProjectGrid extends React.Component {
           headerName: "Priority", field: "projectPriority",width:120,cellRenderer:otherRendertask,colId:'projectPriority'
         },
         {
-          headerName: "Update", field: "" ,width:130, cellRendererFramework:ButtonCellRenderer//,
+          headerName: "Edit", field: "" ,width:130, cellRendererFramework:ProjectButtonCellRenderer//,
        /*  cellRendererParams:{
             modal:{this.state.modal}
           }*/
          // cellRendererFramework: (props) => { return ( <Button color="secondary" onClick={this.editTask.bind(this)}>Click</Button> ); }//cellRenderer: TaskCellRenderer//
         },{
-          headerName: "Suspend", field: "", cellRendererFramework:ButtonCellRenderer,width:130
+          headerName: "Suspend", field: "", cellRendererFramework:ProjectButtonCellRenderer,width:130
           //cellRenderer: "taskCellRenderer",//cellRenderer:buttonRender
         }]
 
-        this.editTask=this.editTask.bind(this);
+        this.editProject=this.editProject.bind(this);
         this.endTask=this.endTask.bind(this);
         this.onGridReady=this.onGridReady.bind(this);
         this.toggleModal=this.toggleModal.bind(this);
@@ -114,7 +116,7 @@ export default class ProjectGrid extends React.Component {
         this.sortByStartDate=this.sortByStartDate.bind(this);
         this.onChangeOfSearchText=this.onChangeOfSearchText.bind(this);
     }
-     editTask(params){
+     editProject(params){
        this.props.toggleModal();
      
      // alert("edit task in task grid");
@@ -157,21 +159,25 @@ export default class ProjectGrid extends React.Component {
     }
     onChange(fieldName,value){
       // /console.log(fieldName,value);
-      let modalUpdateForm=this.state.modalUpdateForm;
-      if(fieldName=="taskName"){
-        modalUpdateForm.taskName=value
-      }else if(fieldName=="priority"){
-        modalUpdateForm.priority=value[1];
-        modalUpdateForm.slider=[value[0],value[1]];
-        console.log( modalUpdateForm.slider);
-      }else if(fieldName=="parentTaskName"){
-        modalUpdateForm.parentTaskName=value
-      }else if(fieldName=="startDate"){
-        modalUpdateForm.startDate=value
-      }else if(fieldName=="endDate"){
-        modalUpdateForm.endDate=value
+      let editProjectModalForm=this.state.editProjectModalForm;
+      if(fieldName=="projectName"){
+        editProjectModalForm.projectName=value
+      }else if(fieldName=="projectPriority"){
+        editProjectModalForm.projectPriority=value[1];
+        editProjectModalForm.projectPrioritySlider=[value[0],value[1]];
+        console.log(editProjectModalForm.projectPrioritySlider);
+      }else if(fieldName=="projectManagerName"){
+        editProjectModalForm.managerName=value
+      }else if(fieldName=="projectStartDate"){
+        editProjectModalForm.projectStartDate=value
+      }else if(fieldName=="projectEndDate"){
+        editProjectModalForm.projectEndDate=value
+      }else if(fieldName=="isSetStartDateEndDate"){
+        editProjectModalForm.isSetStartDateEndDate=value
       }
-      this.setState({modalUpdateForm})
+  
+      this.setState({editProjectModalForm})
+  
     }
     toggleModal(event){
 
@@ -189,9 +195,24 @@ export default class ProjectGrid extends React.Component {
       });
     }
     setModalData(data){
-
+     /* console.log(data);
+      key: 2002
+managerEmployeedId: "399512"
+managerFirstName: "Debashree"
+managerId: 4005
+managerLastName: "Dutta Mandal"
+managerName: "Debashree Dutta Mandal"
+projectEndDate: null
+projectId: 2002
+projectName: "Project2"
+projectPriority: 15
+projectStartDate: null
+tatalCompletedTasks: 0
+totalTasks: 0 */
+   var formattedData=data;
+   formattedData.projectPrioritySlider=[0,data.projectPriority]
       this.setState({
-        modalUpdateForm:data
+        editProjectModalForm:data
       });
     }
 
@@ -266,7 +287,7 @@ export default class ProjectGrid extends React.Component {
         return(
           <div>
             { /*this.state.modal && 
-  <EditTaskModal isOpen={this.state.modal}/> */} 
+  <editProjectModal isOpen={this.state.modal}/> */} 
  
  <FormGroup row>
          <SearchBar onChangeOfSearchText={this.onChangeOfSearchText}/>
@@ -293,21 +314,24 @@ export default class ProjectGrid extends React.Component {
               
         </AgGridReact>
         
+       
     </div>
-    {<CustomModal
+    {<ProjectModal
                     className="modal"
                     show={this.state.modal}
+                    //show={true}
                     close={this.closeCancelModal}
                     columnDefs={this.columnDefs}
                     gridData={this.props.data}
-                    formData={this.state.modalUpdateForm}
+                    formData={this.state.editProjectModalForm}
                     closeCancleModal={this.closeCancelModal}
                     onChange={this.onChange}
-                    updateTask={this.updateTask}
+                    updateUser={this.updateUser}
                     updateGrid={this.updateGrid}
+                    userList={this.props.userList}
                     >
                         Maybe aircrafts fly very high because they don't want to be seen in plane sight?
-    </CustomModal> }
+    </ProjectModal> }
    </div>
         );
 

@@ -57,9 +57,9 @@ export default class TaskGrid extends React.Component {
         },{
           headerName: "Priority", field: "priority",width:120,cellRenderer:otherRendertask
         }, {
-          headerName: "Start Date", field: "startDate",width:120,cellRenderer:otherRendertask
+          headerName: "Start Date", field: "startDate",width:120,cellRenderer:otherRendertask,colId:"startDate"
         },{
-          headerName: "End Date", field: "endDate",width:120,cellRenderer:otherRendertask
+          headerName: "End Date", field: "endDate",width:120,cellRenderer:otherRendertask,colId:"endDate"
         },
         {
           headerName: "Edit", field: "" ,width:100, cellRendererFramework:ButtonCellRenderer//,

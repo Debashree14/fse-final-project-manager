@@ -18,9 +18,9 @@ export default class UseGrid extends React.Component {
          editUserModalForm:{
           userId:"",firstName:"",lastName:"",employeeId:""
         },
-         employeeIdSort:"asc",
-         firstNameSort:"asc",
-         lastNameSort:"asc"         
+         sortByEmployeeId:"asc",
+         sortByFirstName:"asc",
+         sortByLastName:"asc"         
           //frameworkComponents: { taskCellRenderer: TaskCellRenderer },
         // loadingCellRenderer: "taskCellRenderer"
         }
@@ -57,7 +57,7 @@ export default class UseGrid extends React.Component {
         }, {
           headerName: "First Name", field: "firstName",cellRenderer:cellRendertask,width:250,colId:"firstName"
         },{
-          headerName: "Last Name", field: "lastName",width:250,cellRenderer:cellRendertask,colId:"firstName"
+          headerName: "Last Name", field: "lastName",width:250,cellRenderer:cellRendertask,colId:"lastName"
         },
         {
           headerName: "Edit", field: "" ,width:130, cellRendererFramework:UserButtonCellRenderer//,

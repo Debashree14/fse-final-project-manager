@@ -310,7 +310,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
       
 
         <Container className="gridContainer">
-        < ProjectGrid ref="childProjectGrid" data={this.props.projectList} updateGrid={this.updateGrid}/>
+        < ProjectGrid ref="childProjectGrid" data={this.props.projectList}  userList={this.props.userList} updateGrid={this.updateGrid}/>
         </Container>
         {<GenericModalUser
                     className="modal"
