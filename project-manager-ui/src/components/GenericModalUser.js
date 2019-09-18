@@ -67,8 +67,8 @@ export default class GenericModalUser extends React.Component{
       <div>
           <div className="modal-wrapper"
               style={{
-                  transform: this.props.show ? 'translateY(-500px)' : 'translateY(-50vh)',
-                  opacity: this.props.show ? '1' : '0',
+                  transform: this.props.show ? 'translateY(-500px)' : 'translateY(-100vh)',
+                  opacity: this.props.show ? '5' : '0',
                   paddingRight:'150px'
               }}>
               <div className="modal-header">

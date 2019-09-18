@@ -18,7 +18,16 @@ export default class ProjectManagerContainer extends React.Component {
       alltaskList:[],
       projectList:[],
       parentTaskList:[],
-      taskListByProject:[]
+      taskListByProject:[],
+      taskAction:"add",
+      projectAction:"add",
+      addForm:{
+        taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0],projectName:"",taskUserName:"",
+        project:{projectId:""},parentTask:{parentTaskId:""},user:{userId:""},status:"",isParentTask:false
+      },
+      addProjectForm:{
+        projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""}
+      }
 
     }
 
@@ -28,8 +37,43 @@ export default class ProjectManagerContainer extends React.Component {
     this.updateProjectGrid = this.updateProjectGrid.bind(this);
     this.updateParentTaskList=this.updateParentTaskList.bind(this);
     this.updateAllTaskList=this.updateAllTaskList.bind(this);
+    this.toggleTaskAction=this.toggleTaskAction.bind(this);
+    this.onChangeOfTaskForm=this.onChangeOfTaskForm.bind(this);
+    this.setEditTaskFormData=this.setEditTaskFormData.bind(this);
+
+  }
+  setEditTaskFormData(editFormdata){
+
+    this.setState({
+      addForm:editFormdata
+    })
+
   }
 
+  onChangeOfTaskForm(fieldName,value){
+    // /console.log(fieldName,value);
+    let addForm=this.state.addForm;
+    if(fieldName=="taskName"){
+      addForm.taskName=value
+    }else if(fieldName=="priority"){
+      addForm.priority=value[1];
+      addForm.slider=[value[0],value[1]];
+      console.log( addForm.slider);
+    }else if(fieldName=="startDate"){
+      addForm.startDate=value
+    }else if(fieldName=="endDate"){
+      addForm.endDate=value
+    }else if(fieldName=="projectName"){
+      addForm.projectName=value;
+    }else if(fieldName=="parentTaskName"){
+      addForm.parentTaskName=value
+    }else if(fieldName=="taskUserName"){
+      addForm.taskUserName=value;
+    }else if(fieldName=="check"){
+      addForm.isParentTask=value;
+    } 
+    this.setState({addForm})
+  }
   updateUserGrid(userResponseList){
 
     /*let userList=this.state.userList;
@@ -55,6 +99,13 @@ export default class ProjectManagerContainer extends React.Component {
     this.setState({
     alltaskList:allTaskResponseList
   });
+  }
+  toggleTaskAction(taskActionSet){
+
+    this.setState({
+      taskAction:taskActionSet
+    })
+
   }
   toggle(tab) {
     if (this.state.activeTab !== tab) {
@@ -110,6 +161,7 @@ export default class ProjectManagerContainer extends React.Component {
               projectList={this.state.projectList}
               parentTaskList={this.state.parentTaskList}
               alltaskList={this.state.alltaskList}
+             
               />
           </TabPane>
           <TabPane tabId="2">
@@ -122,6 +174,11 @@ export default class ProjectManagerContainer extends React.Component {
                projectList={this.state.projectList}
                parentTaskList={this.state.parentTaskList}
                alltaskList={this.state.alltaskList}
+               addForm={this.state.addForm}
+               toggleTaskAction={this.toggleTaskAction}
+               onChange={this.onChangeOfTaskForm}
+               setEditTaskFormData={this.setEditTaskFormData}
+               taskAction={this.state.taskAction}
               />
           </TabPane>
           <TabPane tabId="3">
@@ -145,6 +202,10 @@ export default class ProjectManagerContainer extends React.Component {
               projectList={this.state.projectList}
               parentTaskList={this.state.parentTaskList}
               alltaskList={this.state.alltaskList}
+              toggleTab={this.toggle}
+              toggleTaskAction={this.toggleTaskAction}
+              setEditTaskFormData={this.setEditTaskFormData}
+              taskAction={this.state.taskAction}
             />
           </TabPane>
         </TabContent>}

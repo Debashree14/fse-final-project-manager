@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,Container } from 'reactstrap';
 import AddTask from "../components/AddTask";
+import Settings from '../Settings.js';
 
 export default class ButtonCellRenderer extends Component {
     constructor(props) {
@@ -19,20 +20,38 @@ export default class ButtonCellRenderer extends Component {
         let slider=[];
         slider=[0,existingData.priority];
         existingData.slider=slider;
-        this.props.context.componentParent.setModalData(existingData);
+        existingData.taskUserName=existingData.userName;
+        //this.props.context.componentParent.setModalData(existingData);
+        this.props.context.toggleTaskAction("edit");
+        this.props.context.setEditTaskFormData(existingData);
+        this.props.context.toggleTab("2");
         //this.props.context.componentParent.methodFromParent(`Row: ${this.props.node.rowIndex}, Col: ${this.props.colDef.headerName}`)
     }
     endTask() {
         //alert("endTask");
         console.log("endTask",this.props.data);
-        var url = 'http://localhost:8081/taskManager/updateTask';
+        var url = Settings.baseUrl+Settings.UPDATE_TASK;
         //var task = {username: 'example'};
         var endtaskObj=Object.assign({},this.props.data)
-        endtaskObj.endDate=new Date();
-        console.log("endTask",JSON.stringify(endtaskObj));
+        //endtaskObj.endDate=new Date();
+        const updateTask={};
+updateTask.user={};
+updateTask.parentTask={}
+updateTask.project={}
+
+updateTask.taskId=endtaskObj.taskId;
+updateTask.taskName=endtaskObj.taskName
+updateTask.endDate=endtaskObj.endDate
+updateTask.priority=endtaskObj.priority
+updateTask.parentTask.parentTaskId=endtaskObj.parentTaskId
+updateTask.user.userId=endtaskObj.userId
+updateTask.project.projectId=endtaskObj.projectId;
+updateTask.status="Completed";
+updateTask.taskId=endtaskObj.taskId;
+        console.log("endTask",JSON.stringify(updateTask));
         fetch(url, {
-          method: 'POST', // or 'PUT'
-          body: JSON.stringify(endtaskObj), // data can be `string` or {object}!
+          method: 'PUT', // or 'PUT'
+          body: JSON.stringify(updateTask), // data can be `string` or {object}!
           
           //mode: 'no-cors',
           headers:{
@@ -47,7 +66,7 @@ export default class ButtonCellRenderer extends Component {
     }
     handleButtonClick(){
         if(this.props.colDef.headerName === 'Edit'){
-            this.props.context.componentParent.toggleModal();
+            //this.props.context.componentParent.toggleModal();
             this.editTask();
             
 

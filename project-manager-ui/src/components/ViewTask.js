@@ -50,7 +50,7 @@ getTasks(){
  // console.log("url1",url1);
  // console.log("url2",url2);
   url=url2;
-  alert(this.state.projectNameValue);
+  //alert(this.state.projectNameValue);
   if(this.state.projectNameValue != ""){
     var url1 = Settings.baseUrl+Settings.GET_ALL_TASK_BT_PROJECT_ID;
   projectId = this.props.projectList.find(project=> project.projectName === this.state.projectNameValue).projectId;
@@ -227,7 +227,13 @@ getTasks(){
     
       </Container>
       <Container hidden={this.state.taskList.length >0 ? false:true} className="gridContainer">
-      < TaskGrid data={this.state.taskList} updateGrid={this.updateGrid} onGridReady={this.onGridReady}/>
+      < TaskGrid data={this.state.taskList} 
+         updateGrid={this.updateGrid} 
+         onGridReady={this.onGridReady} 
+         toggleTab={this.props.toggleTab}
+         setEditTaskFormData={this.props.setEditTaskFormData}
+         toggleTaskAction={this.props.toggleTaskAction}
+         />
       </Container>
      
 {/*this.state.modal && 

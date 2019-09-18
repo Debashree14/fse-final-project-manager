@@ -13,7 +13,13 @@ export default class TaskGrid extends React.Component {
         super(props);
         this.state = {
          modal:false,
-         context: { componentParent: this, editModal: CustomModal},
+         context: { 
+           componentParent: this, 
+           editModal: CustomModal,
+           toggleTab:this.props.toggleTab,
+           setEditTaskFormData:this.props.setEditTaskFormData,
+           toggleTaskAction:this.props.toggleTaskAction
+        },
          modalUpdateForm:{
           taskName:"",startDate:"",endDate:"",priority:"",parentTaskName:"",parentTaskId:"",slider:[0,0]
         }
@@ -45,10 +51,35 @@ export default class TaskGrid extends React.Component {
          '<span>'+params.value+'</span>'
        // 'Value is <b>'+params.value+'</b></div>';
      }
-        
+        /**
+         endDate: "2019-09-18T00:00:00.000+0000"
+parentTaskId: 1001
+parentTaskName: "ParentTask1"
+priority: 9
+projectId: 2007
+projectName: "CITA"
+startDate: "2019-09-03T00:00:00.000+0000"
+taskId: 3004
+taskName: "CITA Task"
+userEmployeeId: "266219"
+userFirstName: "Rudra"
+userId: 4007
+userLastName: "Majumdar"
+userName: "Rudra Majumdar" 
+          
+         
+         */
         this.columnDefs=[{
           headerName: "Task Id", field: "taskId",width:100,hide:true
+        },{
+          headerName: "Project Id", field: "projectId",width:100,hide:true
+        },{
+          headerName: "Project Name", field: "projectName",width:100,hide:true
+        },{
+          headerName: "User Id", field: "userId",width:100,hide:true
         }, {
+          headerName: "User Name", field: "userName",width:100,hide:true
+        },{
           headerName: "Task", field: "taskName",cellRenderer:cellRendertask,width:250
         },{
           headerName: "Parent Task Id", field: "parentTaskId",hide:true,width:100
