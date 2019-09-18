@@ -40,12 +40,16 @@ export default class ProjectButtonCellRenderer extends Component {
         //var task = {username: 'example'};
         //url=url.concat('/').concat(this.props.data.userId)
         console.log(url);
-        var deleteUsrObj=Object.assign({},this.props.data)
+        var suspendPrjctObj=Object.assign({},this.props.data)
+
+        let user={}
+        user.userId=suspendPrjctObj.managerId;
+        suspendPrjctObj.user=user;
       
-        console.log("endTask",JSON.stringify(deleteUsrObj));
+        console.log("endTask",JSON.stringify(suspendPrjctObj));
         fetch(url, {
-          method: 'DELETE', // or 'PUT'
-          body: JSON.stringify(deleteUsrObj), // data can be `string` or {object}!
+          method: 'PUT', // or 'PUT'
+          body: JSON.stringify(suspendPrjctObj), // data can be `string` or {object}!
           
           //mode: 'no-cors',
           headers:{
