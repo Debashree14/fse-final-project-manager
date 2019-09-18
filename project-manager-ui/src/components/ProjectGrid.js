@@ -18,7 +18,12 @@ export default class ProjectGrid extends React.Component {
          endDateSort:"asc",
          completedSort:"asc",
 
-         context: { componentParent: this, editModal: ProjectModal},
+         context: { componentParent: this, 
+           editModal: ProjectModal,
+           //toggleTab:this.props.toggleTab,
+           setEditProjectFormData:this.props.setEditProjectFormData,
+           toggleProjectAction:this.props.toggleProjectAction
+        },
          editProjectModalForm:{
           projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",managerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""},isSetStartDateEndDate:false
         }
@@ -117,7 +122,7 @@ export default class ProjectGrid extends React.Component {
         this.onChangeOfSearchText=this.onChangeOfSearchText.bind(this);
     }
      editProject(params){
-       this.props.toggleModal();
+      // this.props.toggleModal();
      
      // alert("edit task in task grid");
     }
@@ -316,7 +321,7 @@ totalTasks: 0 */
         
        
     </div>
-    {<ProjectModal
+    {/* <ProjectModal
                     className="modal"
                     show={this.state.modal}
                     //show={true}
@@ -331,7 +336,7 @@ totalTasks: 0 */
                     userList={this.props.userList}
                     >
                         Maybe aircrafts fly very high because they don't want to be seen in plane sight?
-    </ProjectModal> }
+    </ProjectModal> */} 
    </div>
         );
 

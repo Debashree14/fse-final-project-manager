@@ -119,7 +119,7 @@ userName: "Rudra Majumdar"
 
     }
      editTask(params){
-       this.props.toggleModal();
+       //this.props.toggleModal();
      
      // alert("edit task in task grid");
     }

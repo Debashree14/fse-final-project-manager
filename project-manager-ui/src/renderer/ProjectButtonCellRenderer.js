@@ -13,15 +13,30 @@ export default class ProjectButtonCellRenderer extends Component {
 
     editProject() {
         //alert("editTask");
+      /*  addProjectForm:{
+            projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""},
+            isSetStartDateEndDate:false
+          }*/
+    
         console.log(this.props.data);
         var existingData=this.props.data;
-        this.props.context.componentParent.setModalData(existingData);
+       // this.props.context.componentParent.setModalData(existingData);
+        existingData.projectManagerName=existingData.managerName;
+        if(existingData.projectStartDate !=null && existingData.projectEndDate !=null){
+            existingData.isSetStartDateEndDate=true;
+        }
+        else{
+            existingData.isSetStartDateEndDate= false;
+        }
+        this.props.context.toggleProjectAction("edit");
+        this.props.context.setEditProjectFormData(existingData);
+
         //this.props.context.componentParent.methodFromParent(`Row: ${this.props.node.rowIndex}, Col: ${this.props.colDef.headerName}`)
     }
     suspendProject() {
         //alert("endTask");
         console.log("suspendProject",this.props.data);
-        var url = Settings.baseUrl+Settings.DELETE_USER;
+        var url = Settings.baseUrl+Settings.UPDATE_PROJECT;
         //var task = {username: 'example'};
         //url=url.concat('/').concat(this.props.data.userId)
         console.log(url);

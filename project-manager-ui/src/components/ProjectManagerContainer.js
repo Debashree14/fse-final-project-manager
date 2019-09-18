@@ -26,7 +26,8 @@ export default class ProjectManagerContainer extends React.Component {
         project:{projectId:""},parentTask:{parentTaskId:""},user:{userId:""},status:"",isParentTask:false
       },
       addProjectForm:{
-        projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""}
+        projectName:"",projectStartDate:"",projectEndDate:"",projectPriority:"",projectManagerName:"",projectManagerUserId:"",projectPrioritySlider:[0,0],user:{userId:""},
+        isSetStartDateEndDate:false
       }
 
     }
@@ -37,10 +38,15 @@ export default class ProjectManagerContainer extends React.Component {
     this.updateProjectGrid = this.updateProjectGrid.bind(this);
     this.updateParentTaskList=this.updateParentTaskList.bind(this);
     this.updateAllTaskList=this.updateAllTaskList.bind(this);
+    /** Task Functionality */
     this.toggleTaskAction=this.toggleTaskAction.bind(this);
     this.onChangeOfTaskForm=this.onChangeOfTaskForm.bind(this);
     this.setEditTaskFormData=this.setEditTaskFormData.bind(this);
 
+    /** Project functionality */
+    this.setEditProjectFormData=this.setEditProjectFormData.bind(this);
+    this.onChangeOfProjectForm=this.onChangeOfProjectForm.bind(this);
+    this.toggleProjectAction=this.toggleProjectAction.bind(this);
   }
   setEditTaskFormData(editFormdata){
 
@@ -49,6 +55,14 @@ export default class ProjectManagerContainer extends React.Component {
     })
 
   }
+  setEditProjectFormData(editProjectdata){
+
+    this.setState({
+      addProjectForm:editProjectdata
+    })
+
+  }
+
 
   onChangeOfTaskForm(fieldName,value){
     // /console.log(fieldName,value);
@@ -74,6 +88,30 @@ export default class ProjectManagerContainer extends React.Component {
     } 
     this.setState({addForm})
   }
+  onChangeOfProjectForm(fieldName,value){
+ 
+      // /console.log(fieldName,value);
+      let addProjectForm=this.state.addProjectForm;
+      if(fieldName=="projectName"){
+        addProjectForm.projectName=value
+      }else if(fieldName=="projectPriority"){
+        addProjectForm.projectPriority=value[1];
+        addProjectForm.projectPrioritySlider=[value[0],value[1]];
+        console.log(addProjectForm.projectPrioritySlider);
+      }else if(fieldName=="projectManagerName"){
+        addProjectForm.projectManagerName=value
+      }else if(fieldName=="projectStartDate"){
+        addProjectForm.projectStartDate=value
+      }else if(fieldName=="projectEndDate"){
+        addProjectForm.projectEndDate=value
+      }else if(fieldName=="check"){
+        addProjectForm.isSetStartDateEndDate=value
+      }
+  
+      this.setState({addProjectForm})
+  
+    }
+  
   updateUserGrid(userResponseList){
 
     /*let userList=this.state.userList;
@@ -104,6 +142,13 @@ export default class ProjectManagerContainer extends React.Component {
 
     this.setState({
       taskAction:taskActionSet
+    })
+
+  }
+  toggleProjectAction(projectActionSet){
+
+    this.setState({
+      projectAction:projectActionSet
     })
 
   }
@@ -161,6 +206,12 @@ export default class ProjectManagerContainer extends React.Component {
               projectList={this.state.projectList}
               parentTaskList={this.state.parentTaskList}
               alltaskList={this.state.alltaskList}
+              addProjectForm={this.state.addProjectForm}
+              onChange={this.onChangeOfProjectForm}
+              setEditProjectFormData={this.setEditProjectFormData}
+              projectAction={this.state.projectAction}
+              toggleProjectAction={this.toggleProjectAction}
+           
              
               />
           </TabPane>
